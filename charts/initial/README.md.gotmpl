@@ -1,0 +1,26 @@
+{{ template "chart.header" . }}
+{{ template "chart.versionBadge" . }}
+
+{{ template "chart.description" . }}
+
+## Installation
+Initial Testing
+
+### Add Helm repository
+
+```shell
+helm repo add dvpe https://dvpe-cloud.github.io/wadtfy-custom-components
+helm repo update
+```
+
+## Install intial chart
+
+```sh
+helm install initial . -f values.yaml
+```
+
+## Configuration
+
+The following table lists the configurable parameters of the chart and its default values.
+
+{{ template "chart.valuesSection" . }}

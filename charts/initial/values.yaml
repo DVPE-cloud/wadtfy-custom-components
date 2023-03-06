@@ -1,0 +1,3 @@
+initial:
+  namespace: "initial"
+  greeting: "hello world"
