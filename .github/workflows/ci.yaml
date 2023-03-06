@@ -57,6 +57,9 @@ jobs:
   kubeval:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@master
-      - name: test
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Run kubeval
         uses: instrumenta/kubeval-action@master
+        with:
+          files: charts/.
