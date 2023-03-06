@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: initial
+  name: initial-cm
   namespace: {{ .Values.initial.namespace }}
 data:
   greeting: {{ .Values.initial.greeting }}

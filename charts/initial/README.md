@@ -1,6 +1,6 @@
 # initial-testing
 
-![Version: 0.0.1](https://img.shields.io/badge/Version-0.0.1-informational?style=flat-square)
+![Version: 0.0.2](https://img.shields.io/badge/Version-0.0.2-informational?style=flat-square)
 
 Initial Testing
 
@@ -28,4 +28,5 @@ The following table lists the configurable parameters of the chart and its defau
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| provider.kubernetes | string | `nil` | The name of the Kubernetes Crossplane Provider used to provision this component. |
+| initial.greeting | string | `"hello world"` |  |
+| initial.namespace | string | `"initial"` |  |
