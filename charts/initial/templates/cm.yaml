@@ -3,5 +3,7 @@ kind: ConfigMap
 metadata:
   name: initial-cm
   namespace: {{ .Values.initial.namespace }}
+  labels:
+    test: "something"
 data:
   greeting: {{ .Values.initial.greeting }}
