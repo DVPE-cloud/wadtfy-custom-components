@@ -1,0 +1,88 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: tenant
+  labels:
+    crossplane.io/xrd: xtenantconfigs.wadtfy.bmwgroup.net
+    apiVersion: v1beta1
+    revision: "1"
+spec:
+  writeConnectionSecretsToNamespace: crossplane-system
+  compositeTypeRef:
+    apiVersion: wadtfy.bmwgroup.net/v1beta1
+    kind: XTenant
+  resources:
+    - name: TenantProviderConfig
+      base:
+        apiVersion: kubernetes.crossplane.io/v1alpha1
+        kind: Object
+        spec:
+          deletionPolicy: Delete
+          forProvider:
+            manifest:
+              apiVersion: aws.crossplane.io/v1beta1
+              kind: ProviderConfig
+              metadata:
+                labels:
+                  created_by: crossplane
+                  crossplane-kind: object.kubernetes.crossplane.io
+                  xrd-kind: xtenants.wadtfy.bmwgroup.net
+                  xrd-helm_chart_version: {{ $.Chart.Version }}
+                name:
+              spec:
+                assumeRoleWithWebIdentity:
+                  roleARN:
+                  roleSessionName:
+                credentials:
+                  source: InjectedIdentity
+          providerConfigRef:
+            name: {{ $.Values.provider.wadtfyK8s }}
+      patches:
+        - type: ToCompositeFieldPath
+          fromFieldPath: "spec.forProvider.manifest.metadata.name"
+          toFieldPath: "status.providerConfig"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "spec.product"
+              - fromFieldPath: "spec.tenantAccountId"
+              - fromFieldPath: "spec.namespace"
+            strategy: string
+            string:
+              fmt: "tenant-provider-config-%s-%s-%s"
+          toFieldPath: "spec.forProvider.manifest.metadata.name"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "spec.tenantAccountId"
+              - fromFieldPath: "spec.stage"
+              - fromFieldPath: "spec.product"
+            strategy: string
+            string:
+              fmt: "arn:aws:iam::%s:role/wadtfy/wadtfy-%s-%s-iac-sa-role"
+          toFieldPath: "spec.forProvider.manifest.spec.assumeRoleWithWebIdentity.roleARN"
+        - fromFieldPath: "spec.product"
+          toFieldPath: "spec.forProvider.manifest.spec.assumeRoleWithWebIdentity.roleSessionName"
+          transforms:
+            - type: string
+              string:
+                fmt: "tenant-provider-config-%s-session"
+    - name: ExternalSecretStore
+      base:
+        apiVersion: wadtfy.bmwgroup.net/v1beta1
+        kind: XExternalSecretStore
+      patches:
+        - fromFieldPath: "spec.product"
+          toFieldPath: "spec.product"
+        - fromFieldPath: "spec.stage"
+          toFieldPath: "spec.stage"
+        - fromFieldPath: "spec.tenantAccountId"
+          toFieldPath: "spec.tenantAccountId"
+        - fromFieldPath: "spec.oidcProviderId"
+          toFieldPath: "spec.oidcProviderId"
+        - fromFieldPath: "spec.region"
+          toFieldPath: "spec.region"
+        - fromFieldPath: "spec.namespace"
+          toFieldPath: "spec.namespace"
+        - fromFieldPath: "status.providerConfig"
+          toFieldPath: "spec.providerConfig"

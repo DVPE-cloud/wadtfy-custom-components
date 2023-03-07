@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: initial-cm
-  namespace: {{ .Values.initial.namespace }}
-  labels:
-    test: "next tryout"
-data:
-  greeting: {{ .Values.initial.greeting }}
