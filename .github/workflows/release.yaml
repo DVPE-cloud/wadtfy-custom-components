@@ -13,11 +13,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
       - name: Configure Git
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@main
+        uses: helm/chart-releaser-action@v1.5.0
+        with:
+          charts_repo_url: https://dvpe-cloud.github.io/wadtfy-custom-components/
         env:
           CR_TOKEN: '${{ secrets.CR_TOKEN }}'
