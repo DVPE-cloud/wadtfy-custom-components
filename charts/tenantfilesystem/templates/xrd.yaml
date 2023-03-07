@@ -1,0 +1,113 @@
+# Crossplane Composite Resource Definition (XRD) describing
+# the type and schema of the corresponding Composite Resource.
+# See https://negz.github.io/crossplane.github.io/docs/v1.4/reference/composition.html#compositeresourcedefinitions for details
+
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xtenantfilesystems.wadtfy.bmwgroup.net
+spec:
+  group: wadtfy.bmwgroup.net
+  names:
+    kind: XTenantFilesystem
+    plural: xtenantfilesystems
+  claimNames:
+    kind: TenantFilesystemClaim
+    plural: tenantfilesystemclaims
+  versions:
+    - name: v1alpha1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                tenantAccountID:
+                  type: string
+                  description: "Account ID of the EKS Cluster System"
+                tenantProviderConfig:
+                  type: string
+                  description: "Crossplane AWS ProvideConfig for Tenant Access"
+                vpcId:
+                  type: string
+                  description: "Tenant VPC ID"
+                vpcSubnetIdA:
+                  type: string
+                  description: "Tenant VPC Subnet A ID"
+                vpcSubnetIdB:
+                  type: string
+                  description: "Tenant VPC Subnet B ID"
+                vpcSubnetIdC:
+                  type: string
+                  description: "Tenant VPC Subnet C ID"
+                region:
+                  type: string
+                  description: "AWS Region in which to create network resources."
+                  enum: ["eu-west-1", "eu-central-1", "us-east-1"]
+                efsPerformanceMode:
+                  type: string
+                  description: "The performance mode this EFS instance should operate in."
+                  enum: ["generalPurpose", "maxIO"]
+                efsThroughputMode:
+                  type: string
+                  description: "Specifies the throughput mode for the file system, either bursting or provisioned. If you set ThroughputMode to provisioned, you must also set a value for ProvisionedThroughputInMibps"
+                  enum: ["bursting", "provisioned"]
+                storageClass:
+                  type: object
+                  description: "see https://github.com/kubernetes-sigs/aws-efs-csi-driver for details on how to configure the storageClass properly"
+                  properties:
+                    directoryPerms:
+                      type: string
+                    uid:
+                      type: string
+                    gid:
+                      type: string
+                    gidRangeStart:
+                      type: string
+                    gidRangeEnd:
+                      type: string
+                    basePath:
+                      type: string
+                  required:
+                    - basePath
+              required:
+                - tenantAccountID
+                - tenantProviderConfig
+                - vpcId
+                - vpcSubnetIdA
+                - vpcSubnetIdB
+                - vpcSubnetIdC
+                - region
+                - efsPerformanceMode
+                - efsThroughputMode
+                - storageClass
+            status:
+              type: object
+              properties:
+                kmsKeyRefName:
+                  type: string
+                  description: The KMS Key name referenced by the EFS Filesystem.
+                fileSystemID:
+                  type: string
+                  description: The ID of the generated EFS Filesystem.
+                fileSystemRef:
+                  type: string
+                  description: The FileName ID Name of the generated EFS Filesystem.
+                tenantRoleName:
+                  type: string
+                  description: The ID of the generated Tenant IAM Role.
+                tenantPolicyName:
+                  type: string
+                  description: The ID of the generated Tenant IAM Policy.
+                tenantSecurityGroupName:
+                  type: string
+                  description: The ID of the generated Tenant SecurityGroup Name.
+                PolicyName:
+                  type: string
+                  description: The ID of the generated IAM Role.
+                StorageClassSecret:
+                  type: string
+                  description: The ID of the generated StorageClassSecret.

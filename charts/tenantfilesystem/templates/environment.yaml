@@ -1,0 +1,9 @@
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: EnvironmentConfig
+metadata:
+  name: xtenantfilesystem
+data:
+  cidrIp: {{ .Values.aws.cidrIp }}
+  eksAccountID: {{ .Values.aws.accountId }}
+  eksCsiDriverControllerSaRole: {{ .Values.eks.csiDriverControllerSaRole }}
+  eksCsiDriverNodeSaRole: {{ .Values.eks.csiDriverNodeSaRole }}

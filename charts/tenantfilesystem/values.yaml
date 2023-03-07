@@ -1,0 +1,10 @@
+aws:
+  # aws.accountId -- The AWS Account ID from EKS Cluster
+  accountId:
+  # aws.cidrIp -- The VPC CIDR IP Network from EKS Cluster
+  cidrIp:
+eks:
+  # eks.csiDriverControllerSaRole -- The Kubernetes service account name which the `efs-csi-controller` Deployment is using
+  csiDriverControllerSaRole:
+  # eks.csiDriverNodeSaRole -- The Kubernetes service account name which the `efs-csi-node` Daemonset is using
+  csiDriverNodeSaRole:
