@@ -4,6 +4,6 @@ metadata:
   name: initial-cm
   namespace: {{ .Values.initial.namespace }}
   labels:
-    test: "something very new"
+    test: "back to the beginning"
 data:
   greeting: {{ .Values.initial.greeting }}
