@@ -2,7 +2,7 @@ apiVersion: v1
 appVersion: "1.1"
 description: Initial Testing
 name: initial-testing
-version: 0.0.4
+version: 0.0.5
 home: https://github.com/DVPE-cloud/wadtfy-custom-components
 keywords:
   - testing
