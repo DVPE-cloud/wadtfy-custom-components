@@ -12,10 +12,10 @@ spec:
     kind: XTenantFilesystem
     plural: xtenantfilesystems
   claimNames:
-    kind: TenantFilesystemClaim
-    plural: tenantfilesystemclaims
+    kind: TenantFilesystem
+    plural: tenantfilesystem
   versions:
-    - name: v1alpha1
+    - name: v1beta1
       served: true
       referenceable: true
       schema:
@@ -25,10 +25,17 @@ spec:
             spec:
               type: object
               properties:
-                tenantAccountID:
+                accountID:
                   type: string
                   description: "Account ID of the EKS Cluster System"
-                tenantProviderConfig:
+                product:
+                  type: string
+                  description: "Tenant's product name."
+                deletePolicy:
+                  type: string
+                  description: "Crossplane Resource delete policy"
+                  enum: ["Orphan", "Delete"]
+                providerConfig:
                   type: string
                   description: "Crossplane AWS ProvideConfig for Tenant Access"
                 vpcId:
@@ -74,8 +81,9 @@ spec:
                   required:
                     - basePath
               required:
-                - tenantAccountID
-                - tenantProviderConfig
+                - product
+                - accountID
+                - providerConfig
                 - vpcId
                 - vpcSubnetIdA
                 - vpcSubnetIdB
@@ -87,6 +95,9 @@ spec:
             status:
               type: object
               properties:
+                product:
+                  type: string
+                  description: "Tenant Product Name"
                 kmsKeyRefName:
                   type: string
                   description: The KMS Key name referenced by the EFS Filesystem.
@@ -96,18 +107,18 @@ spec:
                 fileSystemRef:
                   type: string
                   description: The FileName ID Name of the generated EFS Filesystem.
-                tenantRoleName:
+                roleName:
                   type: string
                   description: The ID of the generated Tenant IAM Role.
-                tenantPolicyName:
+                policyName:
                   type: string
                   description: The ID of the generated Tenant IAM Policy.
-                tenantSecurityGroupName:
+                securityGroupName:
                   type: string
                   description: The ID of the generated Tenant SecurityGroup Name.
-                PolicyName:
+                policyName:
                   type: string
                   description: The ID of the generated IAM Role.
-                StorageClassSecret:
+                storageClassSecret:
                   type: string
                   description: The ID of the generated StorageClassSecret.
