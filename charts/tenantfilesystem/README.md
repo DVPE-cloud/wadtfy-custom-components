@@ -1,6 +1,6 @@
 # tenantfilesystem
 
-![Version: 0.1.0](https://img.shields.io/badge/Version-0.1.0-informational?style=flat-square)
+![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square)
 
 Helm Chart for installing a custom tenantfilesystem xrd
 
@@ -10,6 +10,7 @@ Installs custom wadtfy tenantfilesystem crossplane XRD on an existing Kubernetes
 **Preconditions**:
 * [Crossplane](https://crossplane.io) need to be installed on Kubernetes.
 * The default [AWS Crossplane Provider](https://github.com/crossplane-contrib/provider-aws) is used for provisioning AWS Resources.
+* At least three AWS availability zones in the VPC are required to establish an EFS connectivity.
 
 ### Add Helm repository
 
@@ -71,11 +72,3 @@ kubectl apply -f environment-sample.yaml
 
 The following table lists the configurable parameters of the chart and its default values.
 
-## Values
-
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| aws.accountId | string | `nil` | The AWS Account ID from EKS Cluster |
-| aws.cidrIp | string | `nil` | The VPC CIDR IP Network from EKS Cluster |
-| eks.csiDriverControllerSaRole | string | `nil` | The Kubernetes service account name which the `efs-csi-controller` Deployment is using |
-| eks.csiDriverNodeSaRole | string | `nil` | The Kubernetes service account name which the `efs-csi-node` Daemonset is using |
