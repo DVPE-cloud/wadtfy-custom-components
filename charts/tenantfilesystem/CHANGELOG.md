@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+* Moved StorageClass secret into claim namespace
 * WADTFY Tags
 * Improvements and fixes
 

@@ -110,7 +110,10 @@ spec:
                 roleName:
                   type: string
                   description: The ID of the generated Tenant IAM Role.
-                policyName:
+                policyNameLocal:
+                  type: string
+                  description: The ID of the generated EKS IAM Policy.
+                policyNameRemote:
                   type: string
                   description: The ID of the generated Tenant IAM Policy.
                 securityGroupName:
@@ -122,3 +125,6 @@ spec:
                 storageClassSecret:
                   type: string
                   description: The ID of the generated StorageClassSecret.
+                rbacRoleName:
+                  type: string
+                  description: The Name of the RBAC Role name.

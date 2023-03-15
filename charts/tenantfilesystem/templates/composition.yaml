@@ -92,8 +92,8 @@ spec:
         kind: Key
         metadata:
           labels:
-            "crossplane/xrd-kind": xtenantfilesystem.wadtfy.bmwgroup.net
-            "crossplane/xrd-helm_chart_version": {{ .Chart.Version }}
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
         spec:
           deletionPolicy: Delete
           forProvider:
@@ -158,8 +158,8 @@ spec:
         kind: FileSystem
         metadata:
           labels:
-            "crossplane/xrd-kind": xtenantfilesystem.wadtfy.bmwgroup.net
-            "crossplane/xrd-helm_chart_version": {{ .Chart.Version }}
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
         spec:
           deletionPolicy: Delete
           forProvider:
@@ -220,8 +220,8 @@ spec:
         kind: Role
         metadata:
           labels:
-            "crossplane/xrd-kind": xtenantfilesystem.wadtfy.bmwgroup.net
-            "crossplane/xrd-helm_chart_version": {{ .Chart.Version }}
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
         spec:
           deletionPolicy: Delete
           forProvider:
@@ -282,8 +282,8 @@ spec:
         kind: Policy
         metadata:
           labels:
-            "crossplane/xrd-kind": xtenantfilesystem.wadtfy.bmwgroup.net
-            "crossplane/xrd-helm_chart_version": {{ .Chart.Version }}
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
         spec:
           deletionPolicy: Delete
           forProvider:
@@ -365,7 +365,7 @@ spec:
             fromFieldPath: Required
         - type: ToCompositeFieldPath
           fromFieldPath: "metadata.name"
-          toFieldPath: "status.policyName"
+          toFieldPath: "status.policyNameRemote"
 
     - name: tenant-role-policy-attach
       base:
@@ -373,8 +373,8 @@ spec:
         kind: RolePolicyAttachment
         metadata:
           labels:
-            "crossplane/xrd-kind": xtenantfilesystem.wadtfy.bmwgroup.net
-            "crossplane/xrd-helm_chart_version": {{ .Chart.Version }}
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
         spec:
           deletionPolicy: Delete
           forProvider:
@@ -385,8 +385,16 @@ spec:
           providerConfigRef:
             name: ""
       patches:
-        - type: PatchSet
-          patchSetName: "metadata"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "spec.product"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+            strategy: string
+            string:
+              fmt: "tenant-filesystem-%s-%s-%s-remote"
+          toFieldPath: "metadata.name"
         - type: PatchSet
           patchSetName: "providerConfigRef"
         - fromFieldPath: "spec.deletePolicy"
@@ -395,7 +403,7 @@ spec:
           toFieldPath: "spec.forProvider.roleNameRef.name"
           policy:
             fromFieldPath: Required
-        - fromFieldPath: "status.policyName"
+        - fromFieldPath: "status.policyNameRemote"
           toFieldPath: "spec.forProvider.policyArnRef.name"
           policy:
             fromFieldPath: Required
@@ -407,8 +415,8 @@ spec:
         kind: SecurityGroup
         metadata:
           labels:
-            "crossplane/xrd-kind": xtenantfilesystem.wadtfy.bmwgroup.net
-            "crossplane/xrd-helm_chart_version": {{ .Chart.Version }}
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
         spec:
           deletionPolicy: Delete
           forProvider:
@@ -473,8 +481,8 @@ spec:
         kind: MountTarget
         metadata:
           labels:
-            "crossplane/xrd-kind": xtenantfilesystem.wadtfy.bmwgroup.net
-            "crossplane/xrd-helm_chart_version": {{ .Chart.Version }}
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
         spec:
           forProvider:
             fileSystemIDRef:
@@ -521,8 +529,8 @@ spec:
         kind: MountTarget
         metadata:
           labels:
-            "crossplane/xrd-kind": xtenantfilesystem.wadtfy.bmwgroup.net
-            "crossplane/xrd-helm_chart_version": {{ .Chart.Version }}
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
         spec:
           forProvider:
             fileSystemIDRef:
@@ -569,8 +577,8 @@ spec:
         kind: MountTarget
         metadata:
           labels:
-            "crossplane/xrd-kind": xtenantfilesystem.wadtfy.bmwgroup.net
-            "crossplane/xrd-helm_chart_version": {{ .Chart.Version }}
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
         spec:
           forProvider:
             fileSystemIDRef:
@@ -617,8 +625,8 @@ spec:
         kind: Policy
         metadata:
           labels:
-            "crossplane/xrd-kind": xtenantfilesystem.wadtfy.bmwgroup.net
-            "crossplane/xrd-helm_chart_version": {{ .Chart.Version }}
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
         spec:
           deletionPolicy: Delete
           forProvider:
@@ -676,7 +684,7 @@ spec:
             fromFieldPath: Required
         - type: ToCompositeFieldPath
           fromFieldPath: "metadata.name"
-          toFieldPath: "status.policyName"
+          toFieldPath: "status.policyNameLocal"
 
     - name: local-csi-controller-policy-attach
       base:
@@ -685,8 +693,8 @@ spec:
         metadata:
           name:
           labels:
-            "crossplane/xrd-kind": xtenantfilesystem.wadtfy.bmwgroup.net
-            "crossplane/xrd-helm_chart_version": {{ .Chart.Version }}
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
         spec:
           deletionPolicy: Delete
           forProvider:
@@ -696,11 +704,19 @@ spec:
           providerConfigRef:
             name: provider-config-aws
       patches:
-        - type: PatchSet
-          patchSetName: "metadata"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "spec.product"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+            strategy: string
+            string:
+              fmt: "tenant-filesystem-%s-%s-%s-csicontroller"
+          toFieldPath: "metadata.name"
         - fromFieldPath: "spec.deletePolicy"
           toFieldPath: "spec.deletePolicy"
-        - fromFieldPath: "status.policyName"
+        - fromFieldPath: "status.policyNameLocal"
           toFieldPath: "spec.forProvider.policyArnRef.name"
           policy:
             fromFieldPath: Required
@@ -717,8 +733,8 @@ spec:
         metadata:
           name:
           labels:
-            "crossplane/xrd-kind": xtenantfilesystem.wadtfy.bmwgroup.net
-            "crossplane/xrd-helm_chart_version": {{ .Chart.Version }}
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
         spec:
           deletionPolicy: Delete
           forProvider:
@@ -727,8 +743,16 @@ spec:
           providerConfigRef:
             name: provider-config-aws
       patches:
-        - type: PatchSet
-          patchSetName: "metadata"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "spec.product"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+            strategy: string
+            string:
+              fmt: "tenant-filesystem-%s-%s-%s-csinode"
+          toFieldPath: "metadata.name"
         - fromFieldPath: "spec.deletePolicy"
           toFieldPath: "spec.deletePolicy"
         - type: FromEnvironmentFieldPath
@@ -743,8 +767,8 @@ spec:
         kind: Object
         metadata:
           labels:
-            "crossplane/xrd-kind": xtenantfilesystem.wadtfy.bmwgroup.net
-            "crossplane/xrd-helm_chart_version": {{ .Chart.Version }}
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
         spec:
           forProvider:
             manifest:
@@ -752,7 +776,7 @@ spec:
               kind: Secret
               metadata:
                 name:
-                namespace: kube-system
+                namespace:
               type: Opaque
               data:
                 awsRoleArn: ""
@@ -761,8 +785,8 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: "metadata"
-        # - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
-        #   toFieldPath: "spec.forProvider.manifest.metadata.namespace"
+        - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+          toFieldPath: "spec.forProvider.manifest.metadata.namespace"
         - type: CombineFromComposite
           combine:
             variables:
@@ -789,8 +813,8 @@ spec:
         kind: Object
         metadata:
           labels:
-            "crossplane/xrd-kind": xtenantfilesystem.wadtfy.bmwgroup.net
-            "crossplane/xrd-helm_chart_version": {{ .Chart.Version }}
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
         spec:
           forProvider:
             manifest:
@@ -799,14 +823,14 @@ spec:
               metadata:
                 name:
                 annotations:
-                  "wadtfy.bmwgroup.net/restricted-namespaces": ""
+                  wadtfy.bmwgroup.net/restricted-namespaces: ""
               mountOptions:
               - tls
               - iam
               parameters:
                 az: ""
                 csi.storage.k8s.io/provisioner-secret-name: ""
-                csi.storage.k8s.io/provisioner-secret-namespace: kube-system
+                csi.storage.k8s.io/provisioner-secret-namespace: ""
                 directoryPerms: "700"
                 fileSystemId: ""
                 provisioningMode: efs-ap
@@ -828,9 +852,76 @@ spec:
           toFieldPath: "spec.forProvider.manifest.parameters[csi.storage.k8s.io/provisioner-secret-name]"
           policy:
             fromFieldPath: Required
-        # - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
-        #   toFieldPath: "spec.forProvider.manifest.parameters[csi.storage.k8s.io/provisioner-secret-namespace]"
+        - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+          toFieldPath: "spec.forProvider.manifest.parameters[csi.storage.k8s.io/provisioner-secret-namespace]"
         - fromFieldPath: "status.fileSystemID"
           toFieldPath: "spec.forProvider.manifest.parameters.fileSystemId"
           policy:
             fromFieldPath: Required
+
+    - name: Role
+      base:
+        apiVersion: kubernetes.crossplane.io/v1alpha1
+        kind: Object
+        metadata:
+          labels:
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
+        spec:
+          forProvider:
+            manifest:
+              apiVersion: rbac.authorization.k8s.io/v1
+              kind: Role
+              metadata:
+                namespace:
+              rules:
+              - apiGroups:
+                - ""
+                resources:
+                - secrets
+                verbs:
+                - get
+                - list
+          providerConfigRef:
+            name: provider-config-k8s
+      patches:
+        - type: PatchSet
+          patchSetName: "metadata"
+        - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+          toFieldPath: "spec.forProvider.manifest.metadata.namespace"
+        - type: ToCompositeFieldPath
+          fromFieldPath: "metadata.name"
+          toFieldPath: "status.rbacRoleName"
+
+    - name: RoleBinding
+      base:
+        apiVersion: kubernetes.crossplane.io/v1alpha1
+        kind: Object
+        metadata:
+          labels:
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
+        spec:
+          forProvider:
+            manifest:
+              apiVersion: rbac.authorization.k8s.io/v1
+              kind: RoleBinding
+              metadata:
+                namespace:
+              roleRef:
+                apiGroup: rbac.authorization.k8s.io
+                kind: Role
+                name:
+              subjects:
+              - kind: ServiceAccount
+                name: kube-system-sa
+                namespace: kube-system
+          providerConfigRef:
+            name: provider-config-k8s
+      patches:
+        - type: PatchSet
+          patchSetName: "metadata"
+        - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+          toFieldPath: "spec.forProvider.manifest.metadata.namespace"
+        - fromFieldPath: "status.rbacRoleName"
+          toFieldPath: "spec.forProvider.manifest.roleRef.name"
