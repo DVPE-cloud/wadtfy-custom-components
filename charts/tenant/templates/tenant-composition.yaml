@@ -4,8 +4,7 @@ metadata:
   name: tenant
   labels:
     crossplane.io/xrd: xtenantconfigs.wadtfy.bmwgroup.net
-    apiVersion: v1beta1
-    revision: "1"
+    type: wadtfy-tenant
 spec:
   writeConnectionSecretsToNamespace: crossplane-system
   compositeTypeRef:
