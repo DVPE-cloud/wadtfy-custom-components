@@ -1,6 +1,6 @@
 # tenantfilesystem
 
-![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square)
+![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square)
 
 Helm Chart for installing a custom tenantfilesystem xrd
 
@@ -25,25 +25,27 @@ helm repo update
 helm install tenantfilesystem . -f values.yaml
 ```
 
-## Use TenantFileSystemClaim to create Filesystems
+## Use TenantFileSystem to create Filesystems
 
-Create a `tenantfilesystemclaim.yaml` and set the Tenant Account related values
+Create a `tenantfilesystem.yaml` and set the Tenant Account related values
 
 Sample:
 
 ```yaml
 apiVersion: apiextensions.crossplane.io/v1alpha1
-kind: tenantfilesystemclaim
+kind: tenantfilesystem
 metadata:
-  name: tenantname-filesystemname
-  namespace: tenant-namespace
+  name: name
+  namespace: namespace
 spec:
   compositionRef:
-    name: tenantfilesystem
+    name: tenant-filesystem
   # Tenant AWS Account ID
-  tenantAccountID: ""
+  accountID: ""
+  # Product Name
+  product: ""
   # Crossplane ProviderConfig from Tenant
-  tenantProviderConfig:
+  providerConfig:
   # AWS VPC ID
   vpcId:
   # AWS VPC Subnet ID's
@@ -65,7 +67,7 @@ spec:
 ```
 
 ```sh
-kubectl apply -f environment-sample.yaml
+kubectl apply -f tenantfilesystem.yaml
 ```
 
 ## Configuration

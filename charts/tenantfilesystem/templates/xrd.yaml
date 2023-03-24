@@ -27,10 +27,10 @@ spec:
               properties:
                 accountID:
                   type: string
-                  description: "Account ID of the EKS Cluster System"
+                  description: "Tenant AWS Account ID"
                 product:
                   type: string
-                  description: "Tenant's product name."
+                  description: "Tenant's product name"
                 deletePolicy:
                   type: string
                   description: "Crossplane Resource delete policy"
@@ -80,6 +80,9 @@ spec:
                       type: string
                   required:
                     - basePath
+                iamOidcProviderId:
+                  type: string
+                  description: "TEMPORARY FIELD, ONLY FOR TESTING PURPOSES"
               required:
                 - product
                 - accountID
