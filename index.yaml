@@ -15,6 +15,26 @@ entries:
     urls:
     - https://github.com/DVPE-cloud/wadtfy-custom-components/releases/download/initial-testing-0.0.7/initial-testing-0.0.7.tgz
     version: 0.0.7
+  irsa:
+  - apiVersion: v1
+    appVersion: "1.1"
+    created: "2023-03-27T14:13:49.086020435Z"
+    description: Helm chart for installing a custom irsa crossplane xrd.
+    digest: 8daa2facae150348bcb82936e6791a20b458dc9cbe579f9bad10355f062a4b2a
+    home: https://github.com/DVPE-cloud/wadtfy-custom-components
+    keywords:
+    - crossplane
+    - tenant
+    - gitops
+    - irsa
+    maintainers:
+    - name: mithie
+    - name: herrLierb
+    - name: crimbler2
+    name: irsa
+    urls:
+    - https://github.com/DVPE-cloud/wadtfy-custom-components/releases/download/irsa-0.1.0/irsa-0.1.0.tgz
+    version: 0.1.0
   tenant:
   - apiVersion: v1
     appVersion: "1.1"
@@ -70,4 +90,4 @@ entries:
     urls:
     - https://github.com/DVPE-cloud/wadtfy-custom-components/releases/download/tenant-0.1.0/tenant-0.1.0.tgz
     version: 0.1.0
-generated: "2023-03-20T12:56:18.565345461Z"
+generated: "2023-03-27T14:13:49.086032335Z"
