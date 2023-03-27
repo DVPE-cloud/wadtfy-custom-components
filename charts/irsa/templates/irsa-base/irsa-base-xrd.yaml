@@ -1,0 +1,62 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xirsabases.wadtfy.bmwgroup.net
+spec:
+  group: wadtfy.bmwgroup.net
+  names:
+    kind: XIrsaBase
+    plural: xirsabases
+  versions:
+    - name: v1beta1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                policyDocument:
+                  type: string
+                  description: "The IAM Policy that should be assigned to this IRSA Role. Provide the policy document in JSON format."
+                product:
+                  type: string
+                  description: "The product name this component should be created for, i.e. dvpe, fddm, fips, etc."
+                awsAccountId:
+                  type: string
+                  description: "Id of the AWS account in which to deploy IRSA respurces."
+                eksAccountId:
+                  type: string
+                  description: "Id of the EKS account this component will provisioned into."
+                iamOidcProviderId:
+                  type: string
+                  description: "Id of the EKS Oidc Provider to be used for provisioning this component."
+                region:
+                  type: string
+                  description: "The region of the AWS account in which to deploy IRSA respurces."
+                providerConfig:
+                  type: string
+                  description: "Name of the Provider Config to be used by this component."
+                deletionPolicy:
+                  type: string
+                  description: "The deletion policy to use for this component"
+                  enum: ["Delete", "Orphan"]
+              required:
+                - policyDocument
+                - product
+                - awsAccountId
+                - eksAccountId
+                - iamOidcProviderId
+                - region
+                - providerConfig
+            status:
+              type: object
+              properties:
+                roleArn:
+                  description: "The ARN of the created IAM IRSA Role."
+                  type: string
+                policyArn:
+                  description: "The ARN of the IRSA Policy that has been created for this IRSA component."
+                  type: string

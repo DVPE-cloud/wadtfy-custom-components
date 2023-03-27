@@ -1,0 +1,51 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: irsa-tenant
+spec:
+  writeConnectionSecretsToNamespace: crossplane-system
+  environment:
+    environmentConfigs:
+      - type: Reference
+        ref:
+          name: wadtfy-env
+      - type: Selector
+        selector:
+          matchLabels:
+          - type: Value
+            key: "category"
+            value: "wadtfy-tenant"
+          - type: FromCompositeFieldPath
+            key: "namespace"
+            valueFromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+  compositeTypeRef:
+    apiVersion: wadtfy.bmwgroup.net/v1beta1
+    kind: XIrsa
+  resources:
+    - name: IrsaBase
+      base:
+        apiVersion: wadtfy.bmwgroup.net/v1beta1
+        kind: XIrsaBase
+      patches:
+        - fromFieldPath: "spec.policyDocument"
+          toFieldPath: "spec.policyDocument"
+        - fromFieldPath: "spec.deletionPolicy"
+          toFieldPath: "spec.deletionPolicy"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "product"
+          toFieldPath: "spec.product"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "awsAccountId"
+          toFieldPath: "spec.awsAccountId"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "eksAccountID"
+          toFieldPath: "spec.eksAccountId"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "iamOidcProviderId"
+          toFieldPath: "spec.iamOidcProviderId"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "region"
+          toFieldPath: "spec.region"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "providerConfig"
+          toFieldPath: "spec.providerConfig"
