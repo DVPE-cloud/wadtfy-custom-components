@@ -31,22 +31,21 @@ spec:
                 region:
                   type: string
                   description: "Tenant's AWS Account region."
-                tenantAccountId:
+                awsAccountId:
                   type: string
                   description: "The AWS account id for which to create namespaces on the Kubernetes cluster."
                 namespace:
                   type: string
                   description: "The namespace to be created."
               required:
-                - stage
-                - oidcProviderId
-                - product
-                - region
                 - namespace
-                - tenantAccountId
             status:
               type: object
               properties:
                 providerConfig:
                   description: "Name of the Provider Config to be used by this component."
                   type: string
+                env:
+                  description: "Freeform field to pass values between XRDs"
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true

@@ -1,0 +1,168 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: tenant-system
+  labels:
+    crossplane.io/xrd: xtenantconfigs.wadtfy.bmwgroup.net
+spec:
+  writeConnectionSecretsToNamespace: crossplane-system
+  environment:
+    environmentConfigs:
+      - type: Reference
+        ref:
+          name: wadtfy-env
+  compositeTypeRef:
+    apiVersion: wadtfy.bmwgroup.net/v1beta1
+    kind: XTenant
+  patchSets:
+    - name: "k8s-tags"
+      patches:
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "eksAccountID"
+          toFieldPath: "spec.forProvider.manifest.metadata.annotations[wadtfy.bmwgroup.net/cluster-account-id]"
+        - fromFieldPath: "metadata.name"
+          toFieldPath: "spec.forProvider.manifest.metadata.annotations[wadtfy.bmwgroup.net/component-name]"
+  resources:
+    - name: TenantEnv
+      base:
+        apiVersion: wadtfy.bmwgroup.net/v1beta1
+        kind: XTenantEnv
+      patches:
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "eksAccountID"
+          toFieldPath: "spec.env.awsAccountId"
+        - type: ToCompositeFieldPath
+          fromFieldPath: "spec.env.awsAccountId"
+          toFieldPath: "status.env.awsAccountId"
+    - name: TenantProviderConfig
+      base:
+        apiVersion: kubernetes.crossplane.io/v1alpha1
+        kind: Object
+        spec:
+          deletionPolicy: Delete
+          forProvider:
+            manifest:
+              apiVersion: aws.crossplane.io/v1beta1
+              kind: ProviderConfig
+              metadata:
+                annotations:
+                  wadtfy.bmwgroup.net/xrd-type: XTenant
+                  wadtfy.bmwgroup.net/xrd-version: v1beta1
+                  wadtfy.bmwgroup.net/cluster-account-id:
+                  wadtfy.bmwgroup.net/product-name: "wadtfy"
+                  wadtfy.bmwgroup.net/component-name:
+                name:
+              spec:
+                assumeRoleWithWebIdentity:
+                  roleARN:
+                  roleSessionName:
+                credentials:
+                  source: InjectedIdentity
+          providerConfigRef:
+            name: {{ $.Values.provider.kubernetes }}
+      patches:
+        - type: PatchSet
+          patchSetName: "k8s-tags"
+        - type: ToCompositeFieldPath
+          fromFieldPath: "spec.forProvider.manifest.metadata.name"
+          toFieldPath: "status.providerConfig"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "status.env.awsAccountId"
+              - fromFieldPath: "spec.namespace"
+            strategy: string
+            string:
+              fmt: "tenant-provider-config-wadtfy-%s-%s"
+          toFieldPath: "spec.forProvider.manifest.metadata.name"
+          policy:
+            fromFieldPath: Required
+        - type: CombineFromEnvironment
+          combine:
+            variables:
+              - fromFieldPath: "eksAccountID"
+              - fromFieldPath: "stage"
+            strategy: string
+            string:
+              fmt: "arn:aws:iam::%s:role/wadtfy/wadtfy-%s-wadtfy-iac-sa-role"
+          toFieldPath: "spec.forProvider.manifest.spec.assumeRoleWithWebIdentity.roleARN"
+        - type: CombineFromEnvironment
+          combine:
+            variables:
+              - fromFieldPath: "eksAccountID"
+              - fromFieldPath: "stage"
+            strategy: string
+            string:
+              fmt: "provider-config-%s-%s-wadtfy-session"
+          toFieldPath: "spec.forProvider.manifest.spec.assumeRoleWithWebIdentity.roleSessionName"
+    - name: TenantEnvironmentConfig
+      base:
+        apiVersion: kubernetes.crossplane.io/v1alpha1
+        kind: Object
+        spec:
+          deletionPolicy: Delete
+          forProvider:
+            manifest:
+              apiVersion: apiextensions.crossplane.io/v1alpha1
+              kind: EnvironmentConfig
+              metadata:
+                annotations:
+                  wadtfy.bmwgroup.net/xrd-type: XTenant
+                  wadtfy.bmwgroup.net/xrd-version: v1beta1
+                  wadtfy.bmwgroup.net/cluster-account-id:
+                  wadtfy.bmwgroup.net/product-name: "wadtfy"
+                  wadtfy.bmwgroup.net/component-name:
+                labels:
+                  category: "wadtfy-system"
+                  namespace:
+                name:
+              data:
+                product: "wadtfy"
+                awsAccountId:
+                region:
+                providerConfig:
+          providerConfigRef:
+            name: {{ $.Values.provider.kubernetes }}
+      patches:
+        - type: PatchSet
+          patchSetName: "k8s-tags"
+        - fromFieldPath: "spec.namespace"
+          toFieldPath: "spec.forProvider.manifest.metadata.labels[namespace]"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "status.env.awsAccountId"
+              - fromFieldPath: "spec.namespace"
+            strategy: string
+            string:
+              fmt: "system-env-wadtfy-%s-%s"
+          toFieldPath: "spec.forProvider.manifest.metadata.name"
+          policy:
+            fromFieldPath: Required
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "eksAccountID"
+          toFieldPath: "spec.forProvider.manifest.data.awsAccountId"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "awsRegion"
+          toFieldPath: "spec.forProvider.manifest.data.region"
+        - fromFieldPath: "status.providerConfig"
+          toFieldPath: "spec.forProvider.manifest.data.providerConfig"
+    - name: SecretStore
+      base:
+        apiVersion: wadtfy.bmwgroup.net/v1beta1
+        kind: XSecretStore
+      patches:
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "irsaSystemCompositionRef"
+          toFieldPath: "spec.irsaCompositionRef"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "product"
+          toFieldPath: "spec.product"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "awsRegion"
+          toFieldPath: "spec.region"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "eksAccountID"
+          toFieldPath: "spec.awsAccountId"
+        - fromFieldPath: "spec.namespace"
+          toFieldPath: "spec.namespace"
