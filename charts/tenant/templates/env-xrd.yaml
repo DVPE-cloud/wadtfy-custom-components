@@ -1,0 +1,25 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xtenantenvs.wadtfy.bmwgroup.net
+spec:
+  group: wadtfy.bmwgroup.net
+  names:
+    kind: XTenantEnv
+    plural: xtenantenvs
+  versions:
+    - name: v1beta1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              description: Freeform field to patch between resource templates
+              type: object
+              properties:
+                env:
+                  description: Freeform field to pass values
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true
