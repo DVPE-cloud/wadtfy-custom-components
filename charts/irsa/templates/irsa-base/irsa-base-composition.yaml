@@ -1,0 +1,233 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: irsa-base
+spec:
+  writeConnectionSecretsToNamespace: crossplane-system
+  compositeTypeRef:
+    apiVersion: wadtfy.bmwgroup.net/v1beta1
+    kind: XIrsaBase
+  patchSets:
+    - name: "metadata"
+      patches:
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+            strategy: string
+            string:
+              fmt: "%s-%s"
+          toFieldPath: "metadata.name"
+          policy:
+            fromFieldPath: Required
+    - name: "tags"
+      patches:
+        - fromFieldPath: "metadata.name"
+          toFieldPath: "spec.forProvider.tags[2].value"
+        - fromFieldPath: "spec.eksAccountId"
+          toFieldPath: "spec.forProvider.tags[3].value"
+        - fromFieldPath: "spec.product"
+          toFieldPath: "spec.forProvider.tags[4].value"
+  resources:
+    - name: IamRole
+      base:
+        apiVersion: iam.aws.crossplane.io/v1beta1
+        kind: Role
+        metadata:
+          name:
+        spec:
+          deletionPolicy: Delete
+          forProvider:
+            description: "WADTFY managed IRSA Iam Role to enable Service Accounts in the cluster to access resources in an AWS Account."
+            path: "/wadtfy/irsa/"
+            assumeRolePolicyDocument:
+            tags:
+              - key: "wadtfy.bmwgroup.net/xrd-type"
+                value: "XIrsaBase"
+              - key: "wadtfy.bmwgroup.net/xrd-version"
+                value: "v1beta1"
+              - key: "wadtfy.bmwgroup.net/component-name"
+                value: ""
+              - key: "wadtfy.bmwgroup.net/cluster-account-id"
+                value: ""
+              - key: "wadtfy.bmwgroup.net/product-name"
+                value: ""
+          providerConfigRef:
+            name:
+      patches:
+        - type: PatchSet
+          patchSetName: "metadata"
+        - type: PatchSet
+          patchSetName: "tags"
+        - fromFieldPath: "spec.providerConfig"
+          toFieldPath: "spec.providerConfigRef.name"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "spec.awsAccountId"
+              - fromFieldPath: "spec.region"
+              - fromFieldPath: "spec.iamOidcProviderId"
+              - fromFieldPath: "spec.iamOidcProviderId"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+              - fromFieldPath: "spec.iamOidcProviderId"
+            strategy: string
+            string:
+              fmt: |
+                {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Action": "sts:AssumeRoleWithWebIdentity",
+                      "Principal": {
+                        "Federated": "arn:aws:iam::%s:oidc-provider/oidc.eks.%s.amazonaws.com/id/%s"
+                      },
+                      "Condition": {
+                        "StringEquals": {
+                          "oidc.eks.eu-west-1.amazonaws.com/id/%s:sub": "system:serviceaccount:%s:%s-%s",
+                          "oidc.eks.eu-west-1.amazonaws.com/id/%s:aud": "sts.amazonaws.com"
+                        }
+                      },
+                      "Effect": "Allow"
+                    }
+                  ]
+                }
+          toFieldPath: "spec.forProvider.assumeRolePolicyDocument"
+          policy:
+            fromFieldPath: Required
+        - type: ToCompositeFieldPath
+          fromFieldPath: "status.atProvider.arn"
+          toFieldPath: "status.roleArn"
+        - fromFieldPath: "spec.deletionPolicy"
+          toFieldPath: "spec.deletionPolicy"
+    - name: IamPolicy
+      base:
+        apiVersion: iam.aws.crossplane.io/v1beta1
+        kind: Policy
+        metadata:
+          name:
+        spec:
+          deletionPolicy: Delete
+          forProvider:
+            name:
+            document:
+            tags:
+              - key: "wadtfy.bmwgroup.net/xrd-type"
+                value: "XIrsaBase"
+              - key: "wadtfy.bmwgroup.net/xrd-version"
+                value: "v1beta1"
+              - key: "wadtfy.bmwgroup.net/component-name"
+                value: ""
+              - key: "wadtfy.bmwgroup.net/cluster-account-id"
+                value: ""
+              - key: "wadtfy.bmwgroup.net/product-name"
+                value: ""
+          providerConfigRef:
+            name:
+      patches:
+        - type: PatchSet
+          patchSetName: "metadata"
+        - type: PatchSet
+          patchSetName: "tags"
+        - fromFieldPath: "spec.providerConfig"
+          toFieldPath: "spec.providerConfigRef.name"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "spec.product"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+            strategy: string
+            string:
+              fmt: "irsa-%s-%s-%s"
+          toFieldPath: "spec.forProvider.name"
+          policy:
+            fromFieldPath: Required
+        - fromFieldPath: "spec.policyDocument"
+          toFieldPath: "spec.forProvider.document"
+        - type: ToCompositeFieldPath
+          fromFieldPath: "status.atProvider.arn"
+          toFieldPath: "status.policyArn"
+        - fromFieldPath: "spec.deletionPolicy"
+          toFieldPath: "spec.deletionPolicy"
+    - name: IamRolePolicyAttachment
+      base:
+        apiVersion: iam.aws.crossplane.io/v1beta1
+        kind: RolePolicyAttachment
+        metadata:
+          name:
+        spec:
+          deletionPolicy: Delete
+          forProvider:
+            policyArn:
+            roleName:
+          providerConfigRef:
+            name:
+      patches:
+        - type: PatchSet
+          patchSetName: "metadata"
+        - fromFieldPath: "spec.providerConfig"
+          toFieldPath: "spec.providerConfigRef.name"
+        - fromFieldPath: "status.policyArn"
+          toFieldPath: "spec.forProvider.policyArn"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+            strategy: string
+            string:
+              fmt: "%s-%s"
+          toFieldPath: "spec.forProvider.roleName"
+          policy:
+            fromFieldPath: Required
+        - fromFieldPath: "spec.deletionPolicy"
+          toFieldPath: "spec.deletionPolicy"
+    - name: ServiceAccount
+      base:
+        apiVersion: kubernetes.crossplane.io/v1alpha1
+        kind: Object
+        spec:
+          deletionPolicy: Delete
+          forProvider:
+            manifest:
+              apiVersion: v1
+              kind: ServiceAccount
+              metadata:
+                annotations:
+                  eks.amazonaws.com/role-arn:
+                  wadtfy.bmwgroup.net/xrd-type: XIrsaBase
+                  wadtfy.bmwgroup.net/xrd-version: v1beta1
+                  wadtfy.bmwgroup.net/cluster-account-id:
+                  wadtfy.bmwgroup.net/product-name:
+                  wadtfy.bmwgroup.net/component-name:
+                name:
+                namespace:
+          providerConfigRef:
+            name: {{ .Values.provider.kubernetes }}
+      patches:
+        - fromFieldPath: "spec.eksAccountId"
+          toFieldPath: "spec.forProvider.manifest.metadata.annotations[wadtfy.bmwgroup.net/cluster-account-id]"
+        - fromFieldPath: "spec.product"
+          toFieldPath: "spec.forProvider.manifest.metadata.annotations[wadtfy.bmwgroup.net/product-name]"
+        - fromFieldPath: "metadata.name"
+          toFieldPath: "spec.forProvider.manifest.metadata.annotations[wadtfy.bmwgroup.net/component-name]"
+        - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+          toFieldPath: "spec.forProvider.manifest.metadata.namespace"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+            strategy: string
+            string:
+              fmt: "%s-%s"
+          toFieldPath: "spec.forProvider.manifest.metadata.name"
+          policy:
+            fromFieldPath: Required
+        - fromFieldPath: "status.roleArn"
+          toFieldPath: "spec.forProvider.manifest.metadata.annotations[eks.amazonaws.com/role-arn]"
+        - fromFieldPath: "spec.deletionPolicy"
+          toFieldPath: "spec.deletionPolicy"

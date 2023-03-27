@@ -1,0 +1,32 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xirsas.wadtfy.bmwgroup.net
+spec:
+  group: wadtfy.bmwgroup.net
+  names:
+    kind: XIrsa
+    plural: xirsas
+  claimNames:
+    kind: Irsa
+    plural: irsas
+  versions:
+    - name: v1beta1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                policyDocument:
+                  type: string
+                  description: "The IAM Policy that should be assigned to this IRSA Role. Provide the policy document in JSON format."
+                deletionPolicy:
+                  type: string
+                  description: "The deletion policy to use for this component"
+                  enum: ["Delete", "Orphan"]
+              required:
+                - policyDocument
