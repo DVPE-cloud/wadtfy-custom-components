@@ -1,6 +1,6 @@
 # tenantfilesystem
 
-![Version: 0.3.0](https://img.shields.io/badge/Version-0.3.0-informational?style=flat-square)
+![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square)
 
 Helm Chart for installing a custom tenantfilesystem xrd
 
@@ -10,6 +10,7 @@ Installs custom wadtfy tenantfilesystem crossplane XRD on an existing Kubernetes
 **Preconditions**:
 * [Crossplane](https://crossplane.io) need to be installed on Kubernetes.
 * The default [AWS Crossplane Provider](https://github.com/crossplane-contrib/provider-aws) is used for provisioning AWS Resources.
+* AWS VPC Peering between the WADTFY Cluster account and the tenant account
 * At least three AWS availability zones in the VPC are required to establish an EFS connectivity.
 
 ### Add Helm repository
@@ -24,6 +25,8 @@ helm repo update
 ```sh
 helm install tenantfilesystem . -f values.yaml
 ```
+
+After
 
 ## Use TenantFileSystem to create Filesystems
 
@@ -40,24 +43,18 @@ metadata:
 spec:
   compositionRef:
     name: tenant-filesystem
-  # Tenant AWS Account ID
-  accountID: ""
-  # Product Name
-  product: ""
-  # Crossplane ProviderConfig from Tenant
-  providerConfig:
   # AWS VPC ID
   vpcId:
   # AWS VPC Subnet ID's
   vpcSubnetIdA:
   vpcSubnetIdB:
   vpcSubnetIdC:
-  # AWS Account Region
-  region:
   # EFS Performance Mode
   efsPerformanceMode:
   # EFS Throughput Mode
   efsThroughputMode:
+  # EFS Provisioned Throughput (only capable with efsThroughputMode: provisioned)
+  efsProvisionedThroughputInMibps:
   # StorageClass specific values
   storageClass:
     directoryPerms: "700"

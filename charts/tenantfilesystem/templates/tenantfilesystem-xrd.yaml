@@ -25,7 +25,7 @@ spec:
             spec:
               type: object
               properties:
-                accountID:
+                awsAccountId:
                   type: string
                   description: "Tenant AWS Account ID"
                 product:
@@ -62,6 +62,9 @@ spec:
                   type: string
                   description: "Specifies the throughput mode for the file system, either bursting or provisioned. If you set ThroughputMode to provisioned, you must also set a value for ProvisionedThroughputInMibps"
                   enum: ["bursting", "provisioned"]
+                efsProvisionedThroughputInMibps:
+                  type: integer
+                  description: "The throughput, measured in MiB/s, that you want to provision for the file system. Only applicable with efsThroughputMode is set to provisioned"
                 storageClass:
                   type: object
                   description: "see https://github.com/kubernetes-sigs/aws-efs-csi-driver for details on how to configure the storageClass properly"
@@ -78,20 +81,20 @@ spec:
                       type: string
                     basePath:
                       type: string
+                    reclaimPolicy:
+                      type: string
+                      description: "Set the PersistenVolume reclaim policy. Default is set to Delete"
+                      enum: ["Retain", "Delete"]
                   required:
                     - basePath
                 iamOidcProviderId:
                   type: string
                   description: "TEMPORARY FIELD, ONLY FOR TESTING PURPOSES"
               required:
-                - product
-                - accountID
-                - providerConfig
                 - vpcId
                 - vpcSubnetIdA
                 - vpcSubnetIdB
                 - vpcSubnetIdC
-                - region
                 - efsPerformanceMode
                 - efsThroughputMode
                 - storageClass

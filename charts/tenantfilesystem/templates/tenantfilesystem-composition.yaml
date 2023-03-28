@@ -11,6 +11,15 @@ spec:
     environmentConfigs:
       - ref:
           name: wadtfy-env
+      - type: Selector
+        selector:
+          matchLabels:
+          - type: Value
+            key: "category"
+            value: "wadtfy-tenant"
+          - type: FromCompositeFieldPath
+            key: "namespace"
+            valueFromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
   compositeTypeRef:
     apiVersion: wadtfy.bmwgroup.net/v1beta1
     kind: XTenantFilesystem
@@ -25,7 +34,7 @@ spec:
               - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
             strategy: string
             string:
-              fmt: "tenant-filesystem-%s-%s-%s"
+              fmt: "efs-%s-%s-%s"
           toFieldPath: "metadata.name"
     - name: "tags"
       patches:
@@ -40,7 +49,6 @@ spec:
                 toType: string
         - fromFieldPath: "spec.product"
           toFieldPath: "spec.forProvider.tags[4].tagValue"
-
     - name: "tagsV2"
       patches:
         - fromFieldPath: "metadata.name"
@@ -54,6 +62,16 @@ spec:
                 toType: string
         - fromFieldPath: "spec.product"
           toFieldPath: "spec.forProvider.tags[4].value"
+    - name: "region"
+      patches:
+        - fromFieldPath: "spec.region"
+          toFieldPath: "spec.forProvider.region"
+          policy:
+            fromFieldPath: Required
+    - name: "deletionPolicy"
+      patches:
+        - fromFieldPath: "spec.deletePolicy"
+          toFieldPath: "spec.deletionPolicy"
     - name: "providerConfigRef"
       patches:
         - fromFieldPath: "spec.providerConfig"
@@ -70,9 +88,41 @@ spec:
         - type: FromEnvironmentFieldPath
           fromFieldPath: "iamOidcProviderId"
           toFieldPath: "spec.env.iamOidcProviderId"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "awsAccountId"
+          toFieldPath: "spec.env.awsAccountId"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "region"
+          toFieldPath: "spec.env.region"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "providerConfig"
+          toFieldPath: "spec.env.providerConfig"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "product"
+          toFieldPath: "spec.env.product"
         - type: ToCompositeFieldPath
           fromFieldPath: "spec.env.iamOidcProviderId"
           toFieldPath: "spec.iamOidcProviderId"
+          policy:
+            fromFieldPath: Required
+        - type: ToCompositeFieldPath
+          fromFieldPath: "spec.env.awsAccountId"
+          toFieldPath: "spec.awsAccountId"
+          policy:
+            fromFieldPath: Required
+        - type: ToCompositeFieldPath
+          fromFieldPath: "spec.env.region"
+          toFieldPath: "spec.region"
+          policy:
+            fromFieldPath: Required
+        - type: ToCompositeFieldPath
+          fromFieldPath: "spec.env.product"
+          toFieldPath: "spec.product"
+          policy:
+            fromFieldPath: Required
+        - type: ToCompositeFieldPath
+          fromFieldPath: "spec.env.providerConfig"
+          toFieldPath: "spec.providerConfig"
           policy:
             fromFieldPath: Required
 
@@ -111,13 +161,12 @@ spec:
           patchSetName: "providerConfigRef"
         - type: PatchSet
           patchSetName: "tags"
-        - fromFieldPath: "spec.deletePolicy"
-          toFieldPath: "spec.deletePolicy"
-        - fromFieldPath: "spec.region"
-          toFieldPath: "spec.forProvider.region"
-          policy:
-            fromFieldPath: Required
-        - fromFieldPath: "spec.accountID"
+        - type: PatchSet
+          patchSetName: "region"
+        - type: PatchSet
+          patchSetName: "deletionPolicy"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "awsAccountId"
           toFieldPath: "spec.forProvider.policy"
           transforms:
             - type: string
@@ -179,8 +228,10 @@ spec:
           patchSetName: "providerConfigRef"
         - type: PatchSet
           patchSetName: "tagsV2"
-        - fromFieldPath: "spec.deletePolicy"
-          toFieldPath: "spec.deletePolicy"
+        - type: PatchSet
+          patchSetName: "region"
+        - type: PatchSet
+          patchSetName: "deletionPolicy"
         - fromFieldPath: "status.kmsKeyRefName"
           toFieldPath: "spec.forProvider.kmsKeyIdRef.name"
           policy:
@@ -193,10 +244,8 @@ spec:
           toFieldPath: "spec.forProvider.throughputMode"
           policy:
             fromFieldPath: Required
-        - fromFieldPath: "spec.region"
-          toFieldPath: "spec.forProvider.region"
-          policy:
-            fromFieldPath: Required
+        - fromFieldPath: "spec.efsProvisionedThroughputInMibps"
+          toFieldPath: "spec.forProvider.provisionedThroughputInMibps"
         - type: ToCompositeFieldPath
           fromFieldPath: "metadata.name"
           toFieldPath: "status.fileSystemRef"
@@ -238,8 +287,8 @@ spec:
           patchSetName: "providerConfigRef"
         - type: PatchSet
           patchSetName: "tagsV2"
-        - fromFieldPath: "spec.deletePolicy"
-          toFieldPath: "spec.deletePolicy"
+        - type: PatchSet
+          patchSetName: "deletionPolicy"
         - type: ToCompositeFieldPath
           fromFieldPath: "metadata.name"
           toFieldPath: "status.roleName"
@@ -298,6 +347,10 @@ spec:
           patchSetName: "providerConfigRef"
         - type: PatchSet
           patchSetName: "tagsV2"
+        - type: PatchSet
+          patchSetName: "metadata"
+        - type: PatchSet
+          patchSetName: "deletionPolicy"
         - type: CombineFromComposite
           combine:
             variables:
@@ -306,23 +359,13 @@ spec:
               - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
             strategy: string
             string:
-              fmt: "tenant-filesystem-%s-%s-%s-remote"
-          toFieldPath: "metadata.name"
-        - fromFieldPath: "spec.deletePolicy"
-          toFieldPath: "spec.deletePolicy"
-        - fromFieldPath: "metadata.name"
+              fmt: "efs-%s-%s-%s"
           toFieldPath: "spec.forProvider.name"
-          transforms:
-            - type: string
-              string:
-                fmt: "%s-EFSDescribeMountTargetIAMPolicy"
-          policy:
-            fromFieldPath: Required
         - type: CombineFromComposite
           combine:
             variables:
               - fromFieldPath: "spec.region"
-              - fromFieldPath: "spec.accountID"
+              - fromFieldPath: "spec.awsAccountId"
               - fromFieldPath: "status.fileSystemID"
             strategy: string
             string:
@@ -376,20 +419,12 @@ spec:
           providerConfigRef:
             name: ""
       patches:
-        - type: CombineFromComposite
-          combine:
-            variables:
-              - fromFieldPath: "spec.product"
-              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
-              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
-            strategy: string
-            string:
-              fmt: "tenant-filesystem-%s-%s-%s-remote"
-          toFieldPath: "metadata.name"
+        - type: PatchSet
+          patchSetName: "metadata"
         - type: PatchSet
           patchSetName: "providerConfigRef"
-        - fromFieldPath: "spec.deletePolicy"
-          toFieldPath: "spec.deletePolicy"
+        - type: PatchSet
+          patchSetName: "deletionPolicy"
         - fromFieldPath: "status.roleName"
           toFieldPath: "spec.forProvider.roleNameRef.name"
           policy:
@@ -441,15 +476,13 @@ spec:
           patchSetName: "providerConfigRef"
         - type: PatchSet
           patchSetName: "tagsV2"
-        - fromFieldPath: "spec.deletePolicy"
-          toFieldPath: "spec.deletePolicy"
+        - type: PatchSet
+          patchSetName: "region"
+        - type: PatchSet
+          patchSetName: "deletionPolicy"
         - type: FromEnvironmentFieldPath
           fromFieldPath: "eksCidrIp"
           toFieldPath: "spec.forProvider.ingress[0].ipRanges[0].cidrIp"
-          policy:
-            fromFieldPath: Required
-        - fromFieldPath: "spec.region"
-          toFieldPath: "spec.forProvider.region"
           policy:
             fromFieldPath: Required
         - fromFieldPath: "spec.vpcId"
@@ -487,6 +520,8 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: "providerConfigRef"
+        - type: PatchSet
+          patchSetName: "region"
         - type: CombineFromComposite
           combine:
             variables:
@@ -495,12 +530,8 @@ spec:
               - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
             strategy: string
             string:
-              fmt: "tenant-filesystem-%s-%s-%s-1"
+              fmt: "efs-%s-%s-%s-1"
           toFieldPath: "metadata.name"
-        - fromFieldPath: "spec.region"
-          toFieldPath: "spec.forProvider.region"
-          policy:
-            fromFieldPath: Required
         - fromFieldPath: "status.fileSystemRef"
           toFieldPath: "spec.forProvider.fileSystemIDRef.name"
           policy:
@@ -535,6 +566,8 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: "providerConfigRef"
+        - type: PatchSet
+          patchSetName: "region"
         - type: CombineFromComposite
           combine:
             variables:
@@ -543,12 +576,8 @@ spec:
               - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
             strategy: string
             string:
-              fmt: "tenant-filesystem-%s-%s-%s-2"
+              fmt: "efs-%s-%s-%s-2"
           toFieldPath: "metadata.name"
-        - fromFieldPath: "spec.region"
-          toFieldPath: "spec.forProvider.region"
-          policy:
-            fromFieldPath: Required
         - fromFieldPath: "status.fileSystemRef"
           toFieldPath: "spec.forProvider.fileSystemIDRef.name"
           policy:
@@ -583,6 +612,8 @@ spec:
       patches:
         - type: PatchSet
           patchSetName: "providerConfigRef"
+        - type: PatchSet
+          patchSetName: "region"
         - type: CombineFromComposite
           combine:
             variables:
@@ -591,12 +622,8 @@ spec:
               - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
             strategy: string
             string:
-              fmt: "tenant-filesystem-%s-%s-%s-3"
+              fmt: "efs-%s-%s-%s-3"
           toFieldPath: "metadata.name"
-        - fromFieldPath: "spec.region"
-          toFieldPath: "spec.forProvider.region"
-          policy:
-            fromFieldPath: Required
         - fromFieldPath: "status.fileSystemRef"
           toFieldPath: "spec.forProvider.fileSystemIDRef.name"
           policy:
@@ -619,6 +646,7 @@ spec:
             crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
             crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
         spec:
+          deletionPolicy: Delete
           forProvider:
             manifest:
               apiVersion: v1
@@ -632,6 +660,8 @@ spec:
           providerConfigRef:
             name: provider-config-k8s
       patches:
+        - type: PatchSet
+          patchSetName: "deletionPolicy"
         - type: CombineFromComposite
           combine:
             variables:
@@ -640,14 +670,14 @@ spec:
               - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
             strategy: string
             string:
-              fmt: "tenant-filesystem-%s-%s-%s-secret"
+              fmt: "efs-s-%s-%s-%s-secret"
           toFieldPath: "metadata.name"
         - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
           toFieldPath: "spec.forProvider.manifest.metadata.namespace"
         - type: CombineFromComposite
           combine:
             variables:
-              - fromFieldPath: "spec.accountID"
+              - fromFieldPath: "spec.awsAccountId"
               - fromFieldPath: "status.roleName"
             strategy: string
             string:
@@ -673,6 +703,7 @@ spec:
             crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
             crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
         spec:
+          deletionPolicy: Delete
           forProvider:
             manifest:
               apiVersion: storage.k8s.io/v1
@@ -691,22 +722,21 @@ spec:
                 directoryPerms: "700"
                 fileSystemId: ""
                 provisioningMode: efs-ap
+                gidRangeStart: "50000"
+                gidRangeEnd: "7000000"
+                basePath: ""
               provisioner: efs.csi.aws.com
               reclaimPolicy: Delete
               volumeBindingMode: Immediate
           providerConfigRef:
             name: provider-config-k8s
       patches:
-        - type: CombineFromComposite
-          combine:
-            variables:
-              - fromFieldPath: "spec.product"
-              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
-              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
-            strategy: string
-            string:
-              fmt: "tenant-filesystem-%s-%s-%s-storageclass"
-          toFieldPath: "metadata.name"
+        - type: PatchSet
+          patchSetName: "deletionPolicy"
+        - type: PatchSet
+          patchSetName: "metadata"
+        - fromFieldPath: "spec.storageClass.reclaimPolicy"
+          toFieldPath: "spec.forProvider.manifest.reclaimPolicy"
         - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
           toFieldPath: "spec.forProvider.manifest.metadata.annotations[wadtfy.bmwgroup.net/restricted-namespaces]"
         - fromFieldPath: "spec.region"
@@ -723,6 +753,16 @@ spec:
           toFieldPath: "spec.forProvider.manifest.parameters.fileSystemId"
           policy:
             fromFieldPath: Required
+        - fromFieldPath: "spec.storageClass.uid"
+          toFieldPath: "spec.forProvider.manifest.parameters.uid"
+        - fromFieldPath: "spec.storageClass.gid"
+          toFieldPath: "spec.forProvider.manifest.parameters.gid"
+        - fromFieldPath: "spec.storageClass.gidRangeStart"
+          toFieldPath: "spec.forProvider.manifest.parameters.gidRangeStart"
+        - fromFieldPath: "spec.storageClass.gidRangeEnd"
+          toFieldPath: "spec.forProvider.manifest.parameters.gidRangeEnd"
+        - fromFieldPath: "spec.storageClass.basePath"
+          toFieldPath: "spec.forProvider.manifest.parameters.basePath"
 
     - name: Role
       base:
@@ -733,6 +773,7 @@ spec:
             crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
             crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
         spec:
+          deletionPolicy: Delete
           forProvider:
             manifest:
               apiVersion: rbac.authorization.k8s.io/v1
@@ -750,6 +791,8 @@ spec:
           providerConfigRef:
             name: provider-config-k8s
       patches:
+        - type: PatchSet
+          patchSetName: "deletionPolicy"
         - type: CombineFromComposite
           combine:
             variables:
@@ -758,7 +801,7 @@ spec:
               - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
             strategy: string
             string:
-              fmt: "tenant-filesystem-%s-%s-%s-role"
+              fmt: "efs-r-%s-%s-%s"
           toFieldPath: "metadata.name"
         - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
           toFieldPath: "spec.forProvider.manifest.metadata.namespace"
@@ -775,6 +818,7 @@ spec:
             crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
             crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
         spec:
+          deletionPolicy: Delete
           forProvider:
             manifest:
               apiVersion: rbac.authorization.k8s.io/v1
@@ -792,6 +836,8 @@ spec:
           providerConfigRef:
             name: provider-config-k8s
       patches:
+        - type: PatchSet
+          patchSetName: "deletionPolicy"
         - type: CombineFromComposite
           combine:
             variables:
@@ -800,7 +846,7 @@ spec:
               - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
             strategy: string
             string:
-              fmt: "tenant-filesystem-%s-%s-%s-rolebinding"
+              fmt: "efs-rb-%s-%s-%s"
           toFieldPath: "metadata.name"
         - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
           toFieldPath: "spec.forProvider.manifest.metadata.namespace"
