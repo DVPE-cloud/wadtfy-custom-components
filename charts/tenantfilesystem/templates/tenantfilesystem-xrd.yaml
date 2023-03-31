@@ -38,6 +38,9 @@ spec:
                 providerConfig:
                   type: string
                   description: "Crossplane AWS ProvideConfig for Tenant Access"
+                eksCsiDriverServiceAccount:
+                  type: string
+                  description: "CSI Controller and CSI Driver ServiceAccount Name"
                 vpcId:
                   type: string
                   description: "Tenant VPC ID"
@@ -116,10 +119,7 @@ spec:
                 roleName:
                   type: string
                   description: The ID of the generated Tenant IAM Role.
-                policyNameLocal:
-                  type: string
-                  description: The ID of the generated EKS IAM Policy.
-                policyNameRemote:
+                policyName:
                   type: string
                   description: The ID of the generated Tenant IAM Policy.
                 securityGroupName:

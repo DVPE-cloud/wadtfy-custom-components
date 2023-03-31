@@ -49,6 +49,7 @@ spec:
                 toType: string
         - fromFieldPath: "spec.product"
           toFieldPath: "spec.forProvider.tags[4].tagValue"
+    # This patchset is used for Crossplane CRD's which does not use tagValues
     - name: "tagsV2"
       patches:
         - fromFieldPath: "metadata.name"
@@ -100,6 +101,9 @@ spec:
         - type: FromEnvironmentFieldPath
           fromFieldPath: "product"
           toFieldPath: "spec.env.product"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "eksCsiDriverServiceAccount"
+          toFieldPath: "spec.env.eksCsiDriverServiceAccount"
         - type: ToCompositeFieldPath
           fromFieldPath: "spec.env.iamOidcProviderId"
           toFieldPath: "spec.iamOidcProviderId"
@@ -121,12 +125,13 @@ spec:
           policy:
             fromFieldPath: Required
         - type: ToCompositeFieldPath
-          fromFieldPath: "spec.env.providerConfig"
-          toFieldPath: "spec.providerConfig"
+          fromFieldPath: "spec.env.eksCsiDriverServiceAccount"
+          toFieldPath: "spec.eksCsiDriverServiceAccount"
           policy:
             fromFieldPath: Required
 
-    - name: kms-key
+    # The Key Policy maybe needs to better restrict the access
+    - name: aws-kms-key
       base:
         apiVersion: kms.aws.crossplane.io/v1alpha1
         kind: Key
@@ -191,7 +196,7 @@ spec:
           fromFieldPath: "metadata.name"
           toFieldPath: "status.kmsKeyRefName"
 
-    - name: elasticfilesystem
+    - name: aws-elasticfilesystem
       base:
         apiVersion: efs.aws.crossplane.io/v1alpha1
         kind: FileSystem
@@ -253,7 +258,10 @@ spec:
           fromFieldPath: "status.atProvider.fileSystemID"
           toFieldPath: "status.fileSystemID"
 
-    - name: iam-assume-role
+    # The aws-iam-assume-role is required for the CSI Driver to assume the role.
+    # It is not possible to assume an remote Role with AssumeRoleWithWebIdentity Trustrelation if the source already assumed locally an Role with AssumeRoleWithWebIdentity.
+    # TLDR: Assume Role from IRSA to remote IRSA Role does not work in AWS (Status 2023/03/31)
+    - name: aws-iam-assume-role
       base:
         apiVersion: iam.aws.crossplane.io/v1beta1
         kind: Role
@@ -316,7 +324,7 @@ spec:
                     ]
                   }
 
-    - name: policy
+    - name: aws-policy
       base:
         apiVersion: iam.aws.crossplane.io/v1beta1
         kind: Policy
@@ -399,9 +407,9 @@ spec:
             fromFieldPath: Required
         - type: ToCompositeFieldPath
           fromFieldPath: "metadata.name"
-          toFieldPath: "status.policyNameRemote"
+          toFieldPath: "status.policyName"
 
-    - name: role-policy-attach
+    - name: aws-role-policy-attach
       base:
         apiVersion: iam.aws.crossplane.io/v1beta1
         kind: RolePolicyAttachment
@@ -429,13 +437,13 @@ spec:
           toFieldPath: "spec.forProvider.roleNameRef.name"
           policy:
             fromFieldPath: Required
-        - fromFieldPath: "status.policyNameRemote"
+        - fromFieldPath: "status.policyName"
           toFieldPath: "spec.forProvider.policyArnRef.name"
           policy:
             fromFieldPath: Required
-        # no tags available in RolePolicyAttachment CRD
+        # no tags available in RolePolicyAttachment CRD (Status: 2023-03-31)
 
-    - name: efs-securitygroup
+    - name: aws-efs-securitygroup
       base:
         apiVersion: ec2.aws.crossplane.io/v1beta1
         kind: SecurityGroup
@@ -499,7 +507,7 @@ spec:
           fromFieldPath: "metadata.name"
           toFieldPath: "status.securityGroupName"
 
-    - name: efs-mounttarget-1
+    - name: aws-efs-mounttarget-1
       base:
         apiVersion: efs.aws.crossplane.io/v1alpha1
         kind: MountTarget
@@ -545,7 +553,7 @@ spec:
           policy:
             fromFieldPath: Required
 
-    - name: efs-mounttarget-2
+    - name: aws-efs-mounttarget-2
       base:
         apiVersion: efs.aws.crossplane.io/v1alpha1
         kind: MountTarget
@@ -591,7 +599,7 @@ spec:
           policy:
             fromFieldPath: Required
 
-    - name: efs-mounttarget-3
+    - name: aws-efs-mounttarget-3
       base:
         apiVersion: efs.aws.crossplane.io/v1alpha1
         kind: MountTarget
@@ -637,7 +645,7 @@ spec:
           policy:
             fromFieldPath: Required
 
-    - name: storageClass-secret
+    - name: k8s-storageclass-secret
       base:
         apiVersion: kubernetes.crossplane.io/v1alpha1
         kind: Object
@@ -658,7 +666,7 @@ spec:
               data:
                 awsRoleArn: ""
           providerConfigRef:
-            name: provider-config-k8s
+            name: {{ .Values.providerConfig.kubernetes }}
       patches:
         - type: PatchSet
           patchSetName: "deletionPolicy"
@@ -694,7 +702,7 @@ spec:
           fromFieldPath: "metadata.name"
           toFieldPath: "status.storageClassSecret"
 
-    - name: storageClass
+    - name: k8s-storageclass
       base:
         apiVersion: kubernetes.crossplane.io/v1alpha1
         kind: Object
@@ -729,7 +737,7 @@ spec:
               reclaimPolicy: Delete
               volumeBindingMode: Immediate
           providerConfigRef:
-            name: provider-config-k8s
+            name: {{ .Values.providerConfig.kubernetes }}
       patches:
         - type: PatchSet
           patchSetName: "deletionPolicy"
@@ -764,7 +772,7 @@ spec:
         - fromFieldPath: "spec.storageClass.basePath"
           toFieldPath: "spec.forProvider.manifest.parameters.basePath"
 
-    - name: Role
+    - name: k8s-role
       base:
         apiVersion: kubernetes.crossplane.io/v1alpha1
         kind: Object
@@ -789,7 +797,7 @@ spec:
                 - get
                 - list
           providerConfigRef:
-            name: provider-config-k8s
+            name: {{ .Values.providerConfig.kubernetes }}
       patches:
         - type: PatchSet
           patchSetName: "deletionPolicy"
@@ -809,7 +817,7 @@ spec:
           fromFieldPath: "metadata.name"
           toFieldPath: "status.rbacRoleName"
 
-    - name: RoleBinding
+    - name: k8s-role-binding
       base:
         apiVersion: kubernetes.crossplane.io/v1alpha1
         kind: Object
@@ -834,7 +842,7 @@ spec:
                 name: kube-system-sa
                 namespace: kube-system
           providerConfigRef:
-            name: provider-config-k8s
+            name: {{ .Values.providerConfig.kubernetes }}
       patches:
         - type: PatchSet
           patchSetName: "deletionPolicy"
@@ -852,3 +860,5 @@ spec:
           toFieldPath: "spec.forProvider.manifest.metadata.namespace"
         - fromFieldPath: "status.rbacRoleName"
           toFieldPath: "spec.forProvider.manifest.roleRef.name"
+        - fromFieldPath: "spec.eksCsiDriverServiceAccount"
+          toFieldPath: "spec.forProvider.manifest.subjects[0].kind.name"
