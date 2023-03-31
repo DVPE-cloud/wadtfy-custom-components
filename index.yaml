@@ -38,6 +38,24 @@ entries:
   tenant:
   - apiVersion: v1
     appVersion: "1.1"
+    created: "2023-03-31T12:34:26.904922302Z"
+    description: Helm chart for installing a custom tenant crossplane xrd.
+    digest: 03ab2c4d93570ab541826dd6e399354cacad74181bdf69346b7de04d1c14e236
+    home: https://github.com/DVPE-cloud/wadtfy-custom-components
+    keywords:
+    - crossplane
+    - tenant
+    - gitops
+    maintainers:
+    - name: mithie
+    - name: herrLierb
+    - name: crimbler2
+    name: tenant
+    urls:
+    - https://github.com/DVPE-cloud/wadtfy-custom-components/releases/download/tenant-1.1.0/tenant-1.1.0.tgz
+    version: 1.1.0
+  - apiVersion: v1
+    appVersion: "1.1"
     created: "2023-03-27T14:16:46.976500332Z"
     description: Helm chart for installing a custom tenant crossplane xrd.
     digest: 77f41394de759afaa15def62141b704feb6c59c248dbefeb508fe6a8078364de
@@ -108,4 +126,4 @@ entries:
     urls:
     - https://github.com/DVPE-cloud/wadtfy-custom-components/releases/download/tenant-0.1.0/tenant-0.1.0.tgz
     version: 0.1.0
-generated: "2023-03-27T14:16:46.976524332Z"
+generated: "2023-03-31T12:34:26.904939802Z"
