@@ -666,7 +666,7 @@ spec:
               data:
                 awsRoleArn: ""
           providerConfigRef:
-            name: {{ .Values.providerConfig.kubernetes }}
+            name: {{ .Values.provider.kubernetes }}
       patches:
         - type: PatchSet
           patchSetName: "deletionPolicy"
@@ -737,7 +737,7 @@ spec:
               reclaimPolicy: Delete
               volumeBindingMode: Immediate
           providerConfigRef:
-            name: {{ .Values.providerConfig.kubernetes }}
+            name: {{ .Values.provider.kubernetes }}
       patches:
         - type: PatchSet
           patchSetName: "deletionPolicy"
@@ -797,7 +797,7 @@ spec:
                 - get
                 - list
           providerConfigRef:
-            name: {{ .Values.providerConfig.kubernetes }}
+            name: {{ .Values.provider.kubernetes }}
       patches:
         - type: PatchSet
           patchSetName: "deletionPolicy"
@@ -842,7 +842,7 @@ spec:
                 name: kube-system-sa
                 namespace: kube-system
           providerConfigRef:
-            name: {{ .Values.providerConfig.kubernetes }}
+            name: {{ .Values.provider.kubernetes }}
       patches:
         - type: PatchSet
           patchSetName: "deletionPolicy"
