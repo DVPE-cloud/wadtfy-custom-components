@@ -76,7 +76,7 @@ spec:
               - fromFieldPath: "spec.namespace"
             strategy: string
             string:
-              fmt: "tenant-provider-config-%s-%s-%s"
+              fmt: "%s-%s-%s"
           toFieldPath: "spec.forProvider.manifest.metadata.name"
         - type: CombineFromComposite
           combine:
