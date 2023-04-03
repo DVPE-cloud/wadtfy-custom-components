@@ -119,9 +119,6 @@ spec:
                 roleName:
                   type: string
                   description: The ID of the generated Tenant IAM Role.
-                policyName:
-                  type: string
-                  description: The ID of the generated Tenant IAM Policy.
                 securityGroupName:
                   type: string
                   description: The ID of the generated Tenant SecurityGroup Name.

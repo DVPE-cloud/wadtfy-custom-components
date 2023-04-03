@@ -1,4 +1,4 @@
-# tenantfilesystem
+# tenant-filesystem
 
 ![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square)
 
@@ -75,4 +75,4 @@ The following table lists the configurable parameters of the chart and its defau
 
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
-| providerConfig.kubernetes | string | `nil` |  |
+| provider.kubernetes | string | `nil` | The name of the Kubernetes Crossplane Provider used to provision this component. |

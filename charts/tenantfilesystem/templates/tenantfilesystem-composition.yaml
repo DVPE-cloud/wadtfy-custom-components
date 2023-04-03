@@ -120,6 +120,11 @@ spec:
           policy:
             fromFieldPath: Required
         - type: ToCompositeFieldPath
+          fromFieldPath: "spec.env.providerConfig"
+          toFieldPath: "spec.providerConfig"
+          policy:
+            fromFieldPath: Required
+        - type: ToCompositeFieldPath
           fromFieldPath: "spec.env.product"
           toFieldPath: "spec.product"
           policy:
@@ -352,11 +357,11 @@ spec:
             name: ""
       patches:
         - type: PatchSet
+          patchSetName: "metadata"
+        - type: PatchSet
           patchSetName: "providerConfigRef"
         - type: PatchSet
           patchSetName: "tagsV2"
-        - type: PatchSet
-          patchSetName: "metadata"
         - type: PatchSet
           patchSetName: "deletionPolicy"
         - type: CombineFromComposite
@@ -680,6 +685,8 @@ spec:
             string:
               fmt: "efs-s-%s-%s-%s-secret"
           toFieldPath: "metadata.name"
+        - fromFieldPath: "metadata.name"
+          toFieldPath: "spec.forProvider.manifest.metadata.name"
         - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
           toFieldPath: "spec.forProvider.manifest.metadata.namespace"
         - type: CombineFromComposite
@@ -740,9 +747,9 @@ spec:
             name: {{ .Values.provider.kubernetes }}
       patches:
         - type: PatchSet
-          patchSetName: "deletionPolicy"
-        - type: PatchSet
           patchSetName: "metadata"
+        - type: PatchSet
+          patchSetName: "deletionPolicy"
         - fromFieldPath: "spec.storageClass.reclaimPolicy"
           toFieldPath: "spec.forProvider.manifest.reclaimPolicy"
         - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
@@ -787,6 +794,7 @@ spec:
               apiVersion: rbac.authorization.k8s.io/v1
               kind: Role
               metadata:
+                name:
                 namespace:
               rules:
               - apiGroups:
@@ -810,7 +818,7 @@ spec:
             strategy: string
             string:
               fmt: "efs-r-%s-%s-%s"
-          toFieldPath: "metadata.name"
+          toFieldPath: "spec.forProvider.manifest.metadata.name"
         - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
           toFieldPath: "spec.forProvider.manifest.metadata.namespace"
         - type: ToCompositeFieldPath
@@ -832,6 +840,7 @@ spec:
               apiVersion: rbac.authorization.k8s.io/v1
               kind: RoleBinding
               metadata:
+                name:
                 namespace:
               roleRef:
                 apiGroup: rbac.authorization.k8s.io
@@ -855,10 +864,10 @@ spec:
             strategy: string
             string:
               fmt: "efs-rb-%s-%s-%s"
-          toFieldPath: "metadata.name"
+          toFieldPath: "spec.forProvider.manifest.metadata.name"
         - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
           toFieldPath: "spec.forProvider.manifest.metadata.namespace"
         - fromFieldPath: "status.rbacRoleName"
           toFieldPath: "spec.forProvider.manifest.roleRef.name"
         - fromFieldPath: "spec.eksCsiDriverServiceAccount"
-          toFieldPath: "spec.forProvider.manifest.subjects[0].kind.name"
+          toFieldPath: "spec.forProvider.manifest.subjects[0].name"
