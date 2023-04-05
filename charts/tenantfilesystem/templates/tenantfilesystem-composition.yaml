@@ -79,6 +79,11 @@ spec:
           toFieldPath: "spec.providerConfigRef.name"
           policy:
             fromFieldPath: Required
+    - name: "providerConfigKubernetes"
+      patches:
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "providerConfigKubernetes"
+          toFieldPath: "spec.providerConfigRef.name"
 
   resources:
     - name: TenantFileSystemEnv
@@ -671,10 +676,12 @@ spec:
               data:
                 awsRoleArn: ""
           providerConfigRef:
-            name: {{ .Values.provider.kubernetes }}
+            name: ""
       patches:
         - type: PatchSet
           patchSetName: "deletionPolicy"
+        - type: PatchSet
+          patchSetName: "providerConfigKubernetes"
         - type: CombineFromComposite
           combine:
             variables:
@@ -684,8 +691,6 @@ spec:
             strategy: string
             string:
               fmt: "efs-s-%s-%s-%s-secret"
-          toFieldPath: "metadata.name"
-        - fromFieldPath: "metadata.name"
           toFieldPath: "spec.forProvider.manifest.metadata.name"
         - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
           toFieldPath: "spec.forProvider.manifest.metadata.namespace"
@@ -706,7 +711,7 @@ spec:
           policy:
             fromFieldPath: Required
         - type: ToCompositeFieldPath
-          fromFieldPath: "metadata.name"
+          fromFieldPath: "spec.forProvider.manifest.metadata.name"
           toFieldPath: "status.storageClassSecret"
 
     - name: k8s-storageclass
@@ -744,12 +749,14 @@ spec:
               reclaimPolicy: Delete
               volumeBindingMode: Immediate
           providerConfigRef:
-            name: {{ .Values.provider.kubernetes }}
+            name: ""
       patches:
         - type: PatchSet
           patchSetName: "metadata"
         - type: PatchSet
           patchSetName: "deletionPolicy"
+        - type: PatchSet
+          patchSetName: "providerConfigKubernetes"
         - fromFieldPath: "spec.storageClass.reclaimPolicy"
           toFieldPath: "spec.forProvider.manifest.reclaimPolicy"
         - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
@@ -805,10 +812,12 @@ spec:
                 - get
                 - list
           providerConfigRef:
-            name: {{ .Values.provider.kubernetes }}
+            name: ""
       patches:
         - type: PatchSet
           patchSetName: "deletionPolicy"
+        - type: PatchSet
+          patchSetName: "providerConfigKubernetes"
         - type: CombineFromComposite
           combine:
             variables:
@@ -819,17 +828,23 @@ spec:
             string:
               fmt: "efs-r-%s-%s-%s"
           toFieldPath: "spec.forProvider.manifest.metadata.name"
+          policy:
+            fromFieldPath: Required
         - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
           toFieldPath: "spec.forProvider.manifest.metadata.namespace"
         - type: ToCompositeFieldPath
-          fromFieldPath: "metadata.name"
+          fromFieldPath: "spec.forProvider.manifest.metadata.name"
           toFieldPath: "status.rbacRoleName"
+          policy:
+            fromFieldPath: Required
 
     - name: k8s-role-binding
       base:
         apiVersion: kubernetes.crossplane.io/v1alpha1
         kind: Object
         metadata:
+          name: ""
+          namespace: ""
           labels:
             crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
             crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
@@ -851,10 +866,12 @@ spec:
                 name: kube-system-sa
                 namespace: kube-system
           providerConfigRef:
-            name: {{ .Values.provider.kubernetes }}
+            name: ""
       patches:
         - type: PatchSet
           patchSetName: "deletionPolicy"
+        - type: PatchSet
+          patchSetName: "providerConfigKubernetes"
         - type: CombineFromComposite
           combine:
             variables:
@@ -865,9 +882,13 @@ spec:
             string:
               fmt: "efs-rb-%s-%s-%s"
           toFieldPath: "spec.forProvider.manifest.metadata.name"
+          policy:
+            fromFieldPath: Required
         - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
           toFieldPath: "spec.forProvider.manifest.metadata.namespace"
         - fromFieldPath: "status.rbacRoleName"
           toFieldPath: "spec.forProvider.manifest.roleRef.name"
+          policy:
+            fromFieldPath: Required
         - fromFieldPath: "spec.eksCsiDriverServiceAccount"
           toFieldPath: "spec.forProvider.manifest.subjects[0].name"

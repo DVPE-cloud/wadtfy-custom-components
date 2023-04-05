@@ -71,8 +71,3 @@ kubectl apply -f tenantfilesystem.yaml
 
 The following table lists the configurable parameters of the chart and its default values.
 
-## Values
-
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| provider.kubernetes | string | `nil` | The name of the Kubernetes Crossplane Provider used to provision this component. |
