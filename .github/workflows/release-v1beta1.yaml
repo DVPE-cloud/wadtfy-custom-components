@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - 'charts/**'
+      - 'charts/v1beta1/**'
 
 jobs:
   release:

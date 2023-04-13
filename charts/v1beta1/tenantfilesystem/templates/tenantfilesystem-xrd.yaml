@@ -1,0 +1,133 @@
+# Crossplane Composite Resource Definition (XRD) describing
+# the type and schema of the corresponding Composite Resource.
+# See https://negz.github.io/crossplane.github.io/docs/v1.4/reference/composition.html#compositeresourcedefinitions for details
+
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: xtenantfilesystems.wadtfy.bmwgroup.net
+spec:
+  group: wadtfy.bmwgroup.net
+  names:
+    kind: XTenantFilesystem
+    plural: xtenantfilesystems
+  claimNames:
+    kind: TenantFilesystem
+    plural: tenantfilesystem
+  versions:
+    - name: v1beta1
+      served: true
+      referenceable: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                awsAccountId:
+                  type: string
+                  description: "Tenant AWS Account ID"
+                product:
+                  type: string
+                  description: "Tenant's product name"
+                deletePolicy:
+                  type: string
+                  description: "Crossplane Resource delete policy"
+                  enum: ["Orphan", "Delete"]
+                providerConfig:
+                  type: string
+                  description: "Crossplane AWS ProvideConfig for Tenant Access"
+                eksCsiDriverServiceAccount:
+                  type: string
+                  description: "CSI Controller and CSI Driver ServiceAccount Name"
+                vpcId:
+                  type: string
+                  description: "Tenant VPC ID"
+                vpcSubnetIdA:
+                  type: string
+                  description: "Tenant VPC Subnet A ID"
+                vpcSubnetIdB:
+                  type: string
+                  description: "Tenant VPC Subnet B ID"
+                vpcSubnetIdC:
+                  type: string
+                  description: "Tenant VPC Subnet C ID"
+                region:
+                  type: string
+                  description: "AWS Region in which to create network resources."
+                  enum: ["eu-west-1", "eu-central-1", "us-east-1"]
+                efsPerformanceMode:
+                  type: string
+                  description: "The performance mode this EFS instance should operate in."
+                  enum: ["generalPurpose", "maxIO"]
+                efsThroughputMode:
+                  type: string
+                  description: "Specifies the throughput mode for the file system, either bursting or provisioned. If you set ThroughputMode to provisioned, you must also set a value for ProvisionedThroughputInMibps"
+                  enum: ["bursting", "provisioned"]
+                efsProvisionedThroughputInMibps:
+                  type: integer
+                  description: "The throughput, measured in MiB/s, that you want to provision for the file system. Only applicable with efsThroughputMode is set to provisioned"
+                storageClass:
+                  type: object
+                  description: "see https://github.com/kubernetes-sigs/aws-efs-csi-driver for details on how to configure the storageClass properly"
+                  properties:
+                    directoryPerms:
+                      type: string
+                    uid:
+                      type: string
+                    gid:
+                      type: string
+                    gidRangeStart:
+                      type: string
+                    gidRangeEnd:
+                      type: string
+                    basePath:
+                      type: string
+                    reclaimPolicy:
+                      type: string
+                      description: "Set the PersistenVolume reclaim policy. Default is set to Delete"
+                      enum: ["Retain", "Delete"]
+                  required:
+                    - basePath
+                iamOidcProviderId:
+                  type: string
+                  description: "TEMPORARY FIELD, ONLY FOR TESTING PURPOSES"
+              required:
+                - vpcId
+                - vpcSubnetIdA
+                - vpcSubnetIdB
+                - vpcSubnetIdC
+                - efsPerformanceMode
+                - efsThroughputMode
+                - storageClass
+            status:
+              type: object
+              properties:
+                product:
+                  type: string
+                  description: "Tenant Product Name"
+                kmsKeyRefName:
+                  type: string
+                  description: The KMS Key name referenced by the EFS Filesystem.
+                fileSystemID:
+                  type: string
+                  description: The ID of the generated EFS Filesystem.
+                fileSystemRef:
+                  type: string
+                  description: The FileName ID Name of the generated EFS Filesystem.
+                roleName:
+                  type: string
+                  description: The ID of the generated Tenant IAM Role.
+                securityGroupName:
+                  type: string
+                  description: The ID of the generated Tenant SecurityGroup Name.
+                policyName:
+                  type: string
+                  description: The ID of the generated IAM Role.
+                storageClassSecret:
+                  type: string
+                  description: The ID of the generated StorageClassSecret.
+                rbacRoleName:
+                  type: string
+                  description: The Name of the RBAC Role name.
