@@ -3,7 +3,7 @@ name: Lint and Test Charts
 on:
   pull_request:
     paths:
-      - 'charts/**'
+      - 'charts/v1beta1/**'
 
 jobs:
   lint-chart:
@@ -62,4 +62,4 @@ jobs:
       - name: Run helm-kubeval
         uses: desaintmartin/helm-kubeval-action@master
         with:
-          path: charts/.
+          path: charts/v1beta1/.

@@ -1,0 +1,894 @@
+# Crossplane Composition linking the XRD with the concrete managed EFS Network resource.
+# See https://negz.github.io/crossplane.github.io/docs/v1.4/reference/composition.html#compositions for details
+
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: tenant-filesystem
+spec:
+  writeConnectionSecretsToNamespace: crossplane-system
+  environment:
+    environmentConfigs:
+      - ref:
+          name: wadtfy-env
+      - type: Selector
+        selector:
+          matchLabels:
+          - type: Value
+            key: "category"
+            value: "wadtfy-tenant"
+          - type: FromCompositeFieldPath
+            key: "namespace"
+            valueFromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+  compositeTypeRef:
+    apiVersion: wadtfy.bmwgroup.net/v1beta1
+    kind: XTenantFilesystem
+  patchSets:
+    - name: "metadata"
+      patches:
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "spec.product"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+            strategy: string
+            string:
+              fmt: "efs-%s-%s-%s"
+          toFieldPath: "metadata.name"
+    - name: "tags"
+      patches:
+        - fromFieldPath: "metadata.name"
+          toFieldPath: "spec.forProvider.tags[2].tagValue"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "eksAccountID"
+          toFieldPath: "spec.forProvider.tags[3].tagValue"
+          transforms:
+            - type: convert
+              convert:
+                toType: string
+        - fromFieldPath: "spec.product"
+          toFieldPath: "spec.forProvider.tags[4].tagValue"
+    # This patchset is used for Crossplane CRD's which does not use tagValues
+    - name: "tagsV2"
+      patches:
+        - fromFieldPath: "metadata.name"
+          toFieldPath: "spec.forProvider.tags[2].value"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "eksAccountID"
+          toFieldPath: "spec.forProvider.tags[3].value"
+          transforms:
+            - type: convert
+              convert:
+                toType: string
+        - fromFieldPath: "spec.product"
+          toFieldPath: "spec.forProvider.tags[4].value"
+    - name: "region"
+      patches:
+        - fromFieldPath: "spec.region"
+          toFieldPath: "spec.forProvider.region"
+          policy:
+            fromFieldPath: Required
+    - name: "deletionPolicy"
+      patches:
+        - fromFieldPath: "spec.deletePolicy"
+          toFieldPath: "spec.deletionPolicy"
+    - name: "providerConfigRef"
+      patches:
+        - fromFieldPath: "spec.providerConfig"
+          toFieldPath: "spec.providerConfigRef.name"
+          policy:
+            fromFieldPath: Required
+    - name: "providerConfigKubernetes"
+      patches:
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "providerConfigKubernetes"
+          toFieldPath: "spec.providerConfigRef.name"
+
+  resources:
+    - name: TenantFileSystemEnv
+      base:
+        apiVersion: wadtfy.bmwgroup.net/v1beta1
+        kind: XTenantFileSystemEnv
+      patches:
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "iamOidcProviderId"
+          toFieldPath: "spec.env.iamOidcProviderId"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "awsAccountId"
+          toFieldPath: "spec.env.awsAccountId"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "region"
+          toFieldPath: "spec.env.region"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "providerConfig"
+          toFieldPath: "spec.env.providerConfig"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "product"
+          toFieldPath: "spec.env.product"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "eksCsiDriverServiceAccount"
+          toFieldPath: "spec.env.eksCsiDriverServiceAccount"
+        - type: ToCompositeFieldPath
+          fromFieldPath: "spec.env.iamOidcProviderId"
+          toFieldPath: "spec.iamOidcProviderId"
+          policy:
+            fromFieldPath: Required
+        - type: ToCompositeFieldPath
+          fromFieldPath: "spec.env.awsAccountId"
+          toFieldPath: "spec.awsAccountId"
+          policy:
+            fromFieldPath: Required
+        - type: ToCompositeFieldPath
+          fromFieldPath: "spec.env.region"
+          toFieldPath: "spec.region"
+          policy:
+            fromFieldPath: Required
+        - type: ToCompositeFieldPath
+          fromFieldPath: "spec.env.providerConfig"
+          toFieldPath: "spec.providerConfig"
+          policy:
+            fromFieldPath: Required
+        - type: ToCompositeFieldPath
+          fromFieldPath: "spec.env.product"
+          toFieldPath: "spec.product"
+          policy:
+            fromFieldPath: Required
+        - type: ToCompositeFieldPath
+          fromFieldPath: "spec.env.eksCsiDriverServiceAccount"
+          toFieldPath: "spec.eksCsiDriverServiceAccount"
+          policy:
+            fromFieldPath: Required
+
+    # The Key Policy maybe needs to better restrict the access
+    - name: aws-kms-key
+      base:
+        apiVersion: kms.aws.crossplane.io/v1alpha1
+        kind: Key
+        metadata:
+          labels:
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
+        spec:
+          deletionPolicy: Delete
+          forProvider:
+            tags:
+              - tagKey: "wadtfy.bmwgroup.net/xrd-type"
+                tagValue: "XTenantFileSystem"
+              - tagKey: "wadtfy.bmwgroup.net/xrd-version"
+                tagValue: "v1alpha1"
+              - tagKey: "wadtfy.bmwgroup.net/component-name"
+                tagValue: ""
+              - tagKey: "wadtfy.bmwgroup.net/cluster-account-id"
+                tagValue: ""
+              - tagKey: "wadtfy.bmwgroup.net/product-name"
+                tagValue: ""
+            enableKeyRotation: true
+            enabled: true
+            policy: ""
+            region: ""
+          providerConfigRef:
+            name: ""
+      patches:
+        - type: PatchSet
+          patchSetName: "metadata"
+        - type: PatchSet
+          patchSetName: "providerConfigRef"
+        - type: PatchSet
+          patchSetName: "tags"
+        - type: PatchSet
+          patchSetName: "region"
+        - type: PatchSet
+          patchSetName: "deletionPolicy"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "awsAccountId"
+          toFieldPath: "spec.forProvider.policy"
+          transforms:
+            - type: string
+              string:
+                fmt: |
+                  {
+                    "Version": "2012-10-17",
+                    "Id": "key-policy",
+                    "Statement": [
+                      {
+                        "Sid": "Enable IAM User Permissions",
+                        "Effect": "Allow",
+                        "Principal": {
+                          "AWS": "arn:aws:iam::%s:root"
+                        },
+                        "Action": "kms:*",
+                        "Resource": "*"
+                      }
+                    ]
+                  }
+        - type: ToCompositeFieldPath
+          fromFieldPath: "metadata.name"
+          toFieldPath: "status.kmsKeyRefName"
+
+    - name: aws-elasticfilesystem
+      base:
+        apiVersion: efs.aws.crossplane.io/v1alpha1
+        kind: FileSystem
+        metadata:
+          labels:
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
+        spec:
+          deletionPolicy: Delete
+          forProvider:
+            tags:
+              - key: "wadtfy.bmwgroup.net/xrd-type"
+                value: "XTenantFileSystem"
+              - key: "wadtfy.bmwgroup.net/xrd-version"
+                value: "v1alpha1"
+              - key: "wadtfy.bmwgroup.net/component-name"
+                value: ""
+              - key: "wadtfy.bmwgroup.net/cluster-account-id"
+                value: ""
+              - key: "wadtfy.bmwgroup.net/product-name"
+                value: ""
+            encrypted: true
+            kmsKeyIdRef:
+              name: ""
+            performanceMode: ""
+            throughputMode: ""
+            region: ""
+          providerConfigRef:
+            name: ""
+      patches:
+        - type: PatchSet
+          patchSetName: "metadata"
+        - type: PatchSet
+          patchSetName: "providerConfigRef"
+        - type: PatchSet
+          patchSetName: "tagsV2"
+        - type: PatchSet
+          patchSetName: "region"
+        - type: PatchSet
+          patchSetName: "deletionPolicy"
+        - fromFieldPath: "status.kmsKeyRefName"
+          toFieldPath: "spec.forProvider.kmsKeyIdRef.name"
+          policy:
+            fromFieldPath: Required
+        - fromFieldPath: "spec.efsPerformanceMode"
+          toFieldPath: "spec.forProvider.performanceMode"
+          policy:
+            fromFieldPath: Required
+        - fromFieldPath: "spec.efsThroughputMode"
+          toFieldPath: "spec.forProvider.throughputMode"
+          policy:
+            fromFieldPath: Required
+        - fromFieldPath: "spec.efsProvisionedThroughputInMibps"
+          toFieldPath: "spec.forProvider.provisionedThroughputInMibps"
+        - type: ToCompositeFieldPath
+          fromFieldPath: "metadata.name"
+          toFieldPath: "status.fileSystemRef"
+        - type: ToCompositeFieldPath
+          fromFieldPath: "status.atProvider.fileSystemID"
+          toFieldPath: "status.fileSystemID"
+
+    # The aws-iam-assume-role is required for the CSI Driver to assume the role.
+    # It is not possible to assume an remote Role with AssumeRoleWithWebIdentity Trustrelation if the source already assumed locally an Role with AssumeRoleWithWebIdentity.
+    # TLDR: Assume Role from IRSA to remote IRSA Role does not work in AWS (Status 2023/03/31)
+    - name: aws-iam-assume-role
+      base:
+        apiVersion: iam.aws.crossplane.io/v1beta1
+        kind: Role
+        metadata:
+          labels:
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
+        spec:
+          deletionPolicy: Delete
+          forProvider:
+            path: "/wadtfy/xtenantfilesystem/"
+            tags:
+              - key: "wadtfy.bmwgroup.net/xrd-type"
+                value: "XTenantFileSystem"
+              - key: "wadtfy.bmwgroup.net/xrd-version"
+                value: "v1alpha1"
+              - key: "wadtfy.bmwgroup.net/component-name"
+                value: ""
+              - key: "wadtfy.bmwgroup.net/cluster-account-id"
+                value: ""
+              - key: "wadtfy.bmwgroup.net/product-name"
+                value: ""
+            assumeRolePolicyDocument: ""
+            description: IAM Trust Role
+          providerConfigRef:
+            name: ""
+      patches:
+        - type: PatchSet
+          patchSetName: "metadata"
+        - type: PatchSet
+          patchSetName: "providerConfigRef"
+        - type: PatchSet
+          patchSetName: "tagsV2"
+        - type: PatchSet
+          patchSetName: "deletionPolicy"
+        - type: ToCompositeFieldPath
+          fromFieldPath: "metadata.name"
+          toFieldPath: "status.roleName"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "eksAccountID"
+          toFieldPath: "spec.forProvider.assumeRolePolicyDocument"
+          transforms:
+            - type: convert
+              convert:
+                toType: string
+            - type: string
+              string:
+                fmt: |
+                  {
+                    "Version": "2012-10-17",
+                    "Statement": [
+                      {
+                        "Effect": "Allow",
+                        "Principal": {
+                          "AWS": "arn:aws:iam::%s:root"
+                        },
+                        "Action": "sts:AssumeRole",
+                        "Condition": {}
+                      }
+                    ]
+                  }
+
+    - name: aws-policy
+      base:
+        apiVersion: iam.aws.crossplane.io/v1beta1
+        kind: Policy
+        metadata:
+          labels:
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
+        spec:
+          deletionPolicy: Delete
+          forProvider:
+            tags:
+              - key: "wadtfy.bmwgroup.net/xrd-type"
+                value: "XTenantFileSystem"
+              - key: "wadtfy.bmwgroup.net/xrd-version"
+                value: "v1alpha1"
+              - key: "wadtfy.bmwgroup.net/component-name"
+                value: ""
+              - key: "wadtfy.bmwgroup.net/cluster-account-id"
+                value: ""
+              - key: "wadtfy.bmwgroup.net/product-name"
+                value: ""
+            document: ""
+            name:
+          providerConfigRef:
+            name: ""
+      patches:
+        - type: PatchSet
+          patchSetName: "metadata"
+        - type: PatchSet
+          patchSetName: "providerConfigRef"
+        - type: PatchSet
+          patchSetName: "tagsV2"
+        - type: PatchSet
+          patchSetName: "deletionPolicy"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "spec.product"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+            strategy: string
+            string:
+              fmt: "efs-%s-%s-%s"
+          toFieldPath: "spec.forProvider.name"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "spec.region"
+              - fromFieldPath: "spec.awsAccountId"
+              - fromFieldPath: "status.fileSystemID"
+            strategy: string
+            string:
+              fmt: |
+                {
+                  "Version": "2012-10-17",
+                  "Statement": [
+                    {
+                      "Sid" : "Stmt1DescribeMountTargets",
+                      "Effect": "Allow",
+                      "Action": [
+                        "elasticfilesystem:DescribeFileSystems",
+                        "elasticfilesystem:DescribeMountTargets",
+                        "elasticfilesystem:CreateAccessPoint"
+                      ],
+                      "Resource": "arn:aws:elasticfilesystem:%s:%s:file-system/%s"
+                    },
+                    {
+                      "Sid" : "Stmt2AdditionalEC2PermissionsToDescribeMountTarget",
+                      "Effect": "Allow",
+                      "Action": [
+                        "ec2:DescribeSubnets",
+                        "ec2:DescribeNetworkInterfaces"
+                      ],
+                      "Resource": "*"
+                    }
+                  ]
+                }
+          toFieldPath: "spec.forProvider.document"
+          policy:
+            fromFieldPath: Required
+        - type: ToCompositeFieldPath
+          fromFieldPath: "metadata.name"
+          toFieldPath: "status.policyName"
+
+    - name: aws-role-policy-attach
+      base:
+        apiVersion: iam.aws.crossplane.io/v1beta1
+        kind: RolePolicyAttachment
+        metadata:
+          labels:
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
+        spec:
+          deletionPolicy: Delete
+          forProvider:
+            policyArnRef:
+              name: ""
+            roleNameRef:
+              name: ""
+          providerConfigRef:
+            name: ""
+      patches:
+        - type: PatchSet
+          patchSetName: "metadata"
+        - type: PatchSet
+          patchSetName: "providerConfigRef"
+        - type: PatchSet
+          patchSetName: "deletionPolicy"
+        - fromFieldPath: "status.roleName"
+          toFieldPath: "spec.forProvider.roleNameRef.name"
+          policy:
+            fromFieldPath: Required
+        - fromFieldPath: "status.policyName"
+          toFieldPath: "spec.forProvider.policyArnRef.name"
+          policy:
+            fromFieldPath: Required
+        # no tags available in RolePolicyAttachment CRD (Status: 2023-03-31)
+
+    - name: aws-efs-securitygroup
+      base:
+        apiVersion: ec2.aws.crossplane.io/v1beta1
+        kind: SecurityGroup
+        metadata:
+          labels:
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
+        spec:
+          deletionPolicy: Delete
+          forProvider:
+            tags:
+              - key: "wadtfy.bmwgroup.net/xrd-type"
+                value: "XTenantFileSystem"
+              - key: "wadtfy.bmwgroup.net/xrd-version"
+                value: "v1alpha1"
+              - key: "wadtfy.bmwgroup.net/component-name"
+                value: ""
+              - key: "wadtfy.bmwgroup.net/cluster-account-id"
+                value: ""
+              - key: "wadtfy.bmwgroup.net/product-name"
+                value: ""
+            description: Tenant StorageClass for EFS
+            groupName: ""
+            ingress:
+            - fromPort: 2049
+              ipProtocol: tcp
+              ipRanges:
+              - cidrIp: ""
+              toPort: 2049
+            region: ""
+            vpcId: ""
+          providerConfigRef:
+            name: ""
+      patches:
+        - type: PatchSet
+          patchSetName: "metadata"
+        - type: PatchSet
+          patchSetName: "providerConfigRef"
+        - type: PatchSet
+          patchSetName: "tagsV2"
+        - type: PatchSet
+          patchSetName: "region"
+        - type: PatchSet
+          patchSetName: "deletionPolicy"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "eksCidrIp"
+          toFieldPath: "spec.forProvider.ingress[0].ipRanges[0].cidrIp"
+          policy:
+            fromFieldPath: Required
+        - fromFieldPath: "spec.vpcId"
+          toFieldPath: "spec.forProvider.vpcId"
+          policy:
+            fromFieldPath: Required
+        - fromFieldPath: "metadata.name"
+          toFieldPath: "spec.forProvider.groupName"
+          transforms:
+            - type: string
+              string:
+                fmt: "%s-sg-efs"
+        - type: ToCompositeFieldPath
+          fromFieldPath: "metadata.name"
+          toFieldPath: "status.securityGroupName"
+
+    - name: aws-efs-mounttarget-1
+      base:
+        apiVersion: efs.aws.crossplane.io/v1alpha1
+        kind: MountTarget
+        metadata:
+          labels:
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
+        spec:
+          forProvider:
+            fileSystemIDRef:
+              name: ""
+            region: ""
+            securityGroupsRefs:
+              - name: ""
+            subnetID: ""
+          providerConfigRef:
+            name: ""
+      patches:
+        - type: PatchSet
+          patchSetName: "providerConfigRef"
+        - type: PatchSet
+          patchSetName: "region"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "spec.product"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+            strategy: string
+            string:
+              fmt: "efs-%s-%s-%s-1"
+          toFieldPath: "metadata.name"
+        - fromFieldPath: "status.fileSystemRef"
+          toFieldPath: "spec.forProvider.fileSystemIDRef.name"
+          policy:
+            fromFieldPath: Required
+        - fromFieldPath: "status.securityGroupName"
+          toFieldPath: "spec.forProvider.securityGroupsRefs[0].name"
+          policy:
+            fromFieldPath: Required
+        - fromFieldPath: "spec.vpcSubnetIdA"
+          toFieldPath: "spec.forProvider.subnetID"
+          policy:
+            fromFieldPath: Required
+
+    - name: aws-efs-mounttarget-2
+      base:
+        apiVersion: efs.aws.crossplane.io/v1alpha1
+        kind: MountTarget
+        metadata:
+          labels:
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
+        spec:
+          forProvider:
+            fileSystemIDRef:
+              name: ""
+            region: ""
+            securityGroupsRefs:
+              - name: ""
+            subnetID: ""
+          providerConfigRef:
+            name: ""
+      patches:
+        - type: PatchSet
+          patchSetName: "providerConfigRef"
+        - type: PatchSet
+          patchSetName: "region"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "spec.product"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+            strategy: string
+            string:
+              fmt: "efs-%s-%s-%s-2"
+          toFieldPath: "metadata.name"
+        - fromFieldPath: "status.fileSystemRef"
+          toFieldPath: "spec.forProvider.fileSystemIDRef.name"
+          policy:
+            fromFieldPath: Required
+        - fromFieldPath: "status.securityGroupName"
+          toFieldPath: "spec.forProvider.securityGroupsRefs[0].name"
+          policy:
+            fromFieldPath: Required
+        - fromFieldPath: "spec.vpcSubnetIdB"
+          toFieldPath: "spec.forProvider.subnetID"
+          policy:
+            fromFieldPath: Required
+
+    - name: aws-efs-mounttarget-3
+      base:
+        apiVersion: efs.aws.crossplane.io/v1alpha1
+        kind: MountTarget
+        metadata:
+          labels:
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
+        spec:
+          forProvider:
+            fileSystemIDRef:
+              name: ""
+            region: ""
+            securityGroupsRefs:
+              - name: ""
+            subnetID: ""
+          providerConfigRef:
+            name: ""
+      patches:
+        - type: PatchSet
+          patchSetName: "providerConfigRef"
+        - type: PatchSet
+          patchSetName: "region"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "spec.product"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+            strategy: string
+            string:
+              fmt: "efs-%s-%s-%s-3"
+          toFieldPath: "metadata.name"
+        - fromFieldPath: "status.fileSystemRef"
+          toFieldPath: "spec.forProvider.fileSystemIDRef.name"
+          policy:
+            fromFieldPath: Required
+        - fromFieldPath: "status.securityGroupName"
+          toFieldPath: "spec.forProvider.securityGroupsRefs[0].name"
+          policy:
+            fromFieldPath: Required
+        - fromFieldPath: "spec.vpcSubnetIdC"
+          toFieldPath: "spec.forProvider.subnetID"
+          policy:
+            fromFieldPath: Required
+
+    - name: k8s-storageclass-secret
+      base:
+        apiVersion: kubernetes.crossplane.io/v1alpha1
+        kind: Object
+        metadata:
+          labels:
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
+        spec:
+          deletionPolicy: Delete
+          forProvider:
+            manifest:
+              apiVersion: v1
+              kind: Secret
+              metadata:
+                name:
+                namespace:
+              type: Opaque
+              data:
+                awsRoleArn: ""
+          providerConfigRef:
+            name: ""
+      patches:
+        - type: PatchSet
+          patchSetName: "deletionPolicy"
+        - type: PatchSet
+          patchSetName: "providerConfigKubernetes"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "spec.product"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+            strategy: string
+            string:
+              fmt: "efs-s-%s-%s-%s-secret"
+          toFieldPath: "spec.forProvider.manifest.metadata.name"
+        - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+          toFieldPath: "spec.forProvider.manifest.metadata.namespace"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "spec.awsAccountId"
+              - fromFieldPath: "status.roleName"
+            strategy: string
+            string:
+              fmt: "arn:aws:iam::%s:role/wadtfy/xtenantfilesystem/%s"
+          toFieldPath: "spec.forProvider.manifest.data.awsRoleArn"
+          transforms:
+            - type: string
+              string:
+                type: Convert
+                convert: ToBase64
+          policy:
+            fromFieldPath: Required
+        - type: ToCompositeFieldPath
+          fromFieldPath: "spec.forProvider.manifest.metadata.name"
+          toFieldPath: "status.storageClassSecret"
+
+    - name: k8s-storageclass
+      base:
+        apiVersion: kubernetes.crossplane.io/v1alpha1
+        kind: Object
+        metadata:
+          labels:
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
+        spec:
+          deletionPolicy: Delete
+          forProvider:
+            manifest:
+              apiVersion: storage.k8s.io/v1
+              kind: StorageClass
+              metadata:
+                name:
+                annotations:
+                  wadtfy.bmwgroup.net/restricted-namespaces: ""
+              mountOptions:
+              - tls
+              - iam
+              parameters:
+                az: ""
+                csi.storage.k8s.io/provisioner-secret-name: ""
+                csi.storage.k8s.io/provisioner-secret-namespace: ""
+                directoryPerms: "700"
+                fileSystemId: ""
+                provisioningMode: efs-ap
+                gidRangeStart: "50000"
+                gidRangeEnd: "7000000"
+                basePath: ""
+              provisioner: efs.csi.aws.com
+              reclaimPolicy: Delete
+              volumeBindingMode: Immediate
+          providerConfigRef:
+            name: ""
+      patches:
+        - type: PatchSet
+          patchSetName: "metadata"
+        - type: PatchSet
+          patchSetName: "deletionPolicy"
+        - type: PatchSet
+          patchSetName: "providerConfigKubernetes"
+        - fromFieldPath: "spec.storageClass.reclaimPolicy"
+          toFieldPath: "spec.forProvider.manifest.reclaimPolicy"
+        - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+          toFieldPath: "spec.forProvider.manifest.metadata.annotations[wadtfy.bmwgroup.net/restricted-namespaces]"
+        - fromFieldPath: "spec.region"
+          toFieldPath: "spec.forProvider.manifest.parameters.az"
+          policy:
+            fromFieldPath: Required
+        - fromFieldPath: "status.storageClassSecret"
+          toFieldPath: "spec.forProvider.manifest.parameters[csi.storage.k8s.io/provisioner-secret-name]"
+          policy:
+            fromFieldPath: Required
+        - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+          toFieldPath: "spec.forProvider.manifest.parameters[csi.storage.k8s.io/provisioner-secret-namespace]"
+        - fromFieldPath: "status.fileSystemID"
+          toFieldPath: "spec.forProvider.manifest.parameters.fileSystemId"
+          policy:
+            fromFieldPath: Required
+        - fromFieldPath: "spec.storageClass.uid"
+          toFieldPath: "spec.forProvider.manifest.parameters.uid"
+        - fromFieldPath: "spec.storageClass.gid"
+          toFieldPath: "spec.forProvider.manifest.parameters.gid"
+        - fromFieldPath: "spec.storageClass.gidRangeStart"
+          toFieldPath: "spec.forProvider.manifest.parameters.gidRangeStart"
+        - fromFieldPath: "spec.storageClass.gidRangeEnd"
+          toFieldPath: "spec.forProvider.manifest.parameters.gidRangeEnd"
+        - fromFieldPath: "spec.storageClass.basePath"
+          toFieldPath: "spec.forProvider.manifest.parameters.basePath"
+
+    - name: k8s-role
+      base:
+        apiVersion: kubernetes.crossplane.io/v1alpha1
+        kind: Object
+        metadata:
+          labels:
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
+        spec:
+          deletionPolicy: Delete
+          forProvider:
+            manifest:
+              apiVersion: rbac.authorization.k8s.io/v1
+              kind: Role
+              metadata:
+                name:
+                namespace:
+              rules:
+              - apiGroups:
+                - ""
+                resources:
+                - secrets
+                verbs:
+                - get
+                - list
+          providerConfigRef:
+            name: ""
+      patches:
+        - type: PatchSet
+          patchSetName: "deletionPolicy"
+        - type: PatchSet
+          patchSetName: "providerConfigKubernetes"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "spec.product"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+            strategy: string
+            string:
+              fmt: "efs-r-%s-%s-%s"
+          toFieldPath: "spec.forProvider.manifest.metadata.name"
+          policy:
+            fromFieldPath: Required
+        - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+          toFieldPath: "spec.forProvider.manifest.metadata.namespace"
+        - type: ToCompositeFieldPath
+          fromFieldPath: "spec.forProvider.manifest.metadata.name"
+          toFieldPath: "status.rbacRoleName"
+          policy:
+            fromFieldPath: Required
+
+    - name: k8s-role-binding
+      base:
+        apiVersion: kubernetes.crossplane.io/v1alpha1
+        kind: Object
+        metadata:
+          name: ""
+          namespace: ""
+          labels:
+            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
+        spec:
+          deletionPolicy: Delete
+          forProvider:
+            manifest:
+              apiVersion: rbac.authorization.k8s.io/v1
+              kind: RoleBinding
+              metadata:
+                name:
+                namespace:
+              roleRef:
+                apiGroup: rbac.authorization.k8s.io
+                kind: Role
+                name:
+              subjects:
+              - kind: ServiceAccount
+                name: kube-system-sa
+                namespace: kube-system
+          providerConfigRef:
+            name: ""
+      patches:
+        - type: PatchSet
+          patchSetName: "deletionPolicy"
+        - type: PatchSet
+          patchSetName: "providerConfigKubernetes"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "spec.product"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+            strategy: string
+            string:
+              fmt: "efs-rb-%s-%s-%s"
+          toFieldPath: "spec.forProvider.manifest.metadata.name"
+          policy:
+            fromFieldPath: Required
+        - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+          toFieldPath: "spec.forProvider.manifest.metadata.namespace"
+        - fromFieldPath: "status.rbacRoleName"
+          toFieldPath: "spec.forProvider.manifest.roleRef.name"
+          policy:
+            fromFieldPath: Required
+        - fromFieldPath: "spec.eksCsiDriverServiceAccount"
+          toFieldPath: "spec.forProvider.manifest.subjects[0].name"
