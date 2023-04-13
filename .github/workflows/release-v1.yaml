@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - 'charts/v1beta1/**'
+      - 'charts/v1/**'
 
 jobs:
   release:
@@ -29,9 +29,9 @@ jobs:
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.5.0
         with:
-          charts_dir: charts/v1beta1/
+          charts_dir: charts/v1/
         env:
           CR_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
           CR_RELEASE_NOTES_FILE: CHANGELOG.md
-          CR_RELEASE_NAME_TEMPLATE: "{{ .Name }}-{{ .Version }}-v1beta1"
+          CR_RELEASE_NAME_TEMPLATE: "{{ .Name }}-{{ .Version }}-v1"
 
