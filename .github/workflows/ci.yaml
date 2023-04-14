@@ -3,6 +3,8 @@ name: Lint and Test Charts
 on:
   pull_request:
     paths:
+      - 'charts/v1/**'
+      - 'charts/v1alpha1/**'
       - 'charts/v1beta1/**'
 
 jobs:
@@ -54,7 +56,27 @@ jobs:
       - name: Run helm-docs
         run: .github/helm-docs.sh
 
-  helm-kubeval:
+  helm-kubeval-v1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Run helm-kubeval
+        uses: desaintmartin/helm-kubeval-action@master
+        with:
+          path: charts/v1/.
+
+  helm-kubeval-v1alpha1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Run helm-kubeval
+        uses: desaintmartin/helm-kubeval-action@master
+        with:
+          path: charts/v1alpha1/.
+
+  helm-kubeval-v1beta1:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
