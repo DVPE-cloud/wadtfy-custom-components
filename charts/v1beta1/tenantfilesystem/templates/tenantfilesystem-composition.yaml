@@ -81,8 +81,7 @@ spec:
             fromFieldPath: Required
     - name: "providerConfigKubernetes"
       patches:
-        - type: FromEnvironmentFieldPath
-          fromFieldPath: "providerConfigKubernetes"
+        - fromFieldPath: "spec.providerConfigKubernetes"
           toFieldPath: "spec.providerConfigRef.name"
 
   resources:
@@ -109,6 +108,9 @@ spec:
         - type: FromEnvironmentFieldPath
           fromFieldPath: "eksCsiDriverServiceAccount"
           toFieldPath: "spec.env.eksCsiDriverServiceAccount"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "providerConfigKubernetes"
+          toFieldPath: "spec.env.providerConfigKubernetes"
         - type: ToCompositeFieldPath
           fromFieldPath: "spec.env.iamOidcProviderId"
           toFieldPath: "spec.iamOidcProviderId"
@@ -137,6 +139,11 @@ spec:
         - type: ToCompositeFieldPath
           fromFieldPath: "spec.env.eksCsiDriverServiceAccount"
           toFieldPath: "spec.eksCsiDriverServiceAccount"
+          policy:
+            fromFieldPath: Required
+        - type: ToCompositeFieldPath
+          fromFieldPath: "spec.env.providerConfigKubernetes"
+          toFieldPath: "spec.providerConfigKubernetes"
           policy:
             fromFieldPath: Required
 

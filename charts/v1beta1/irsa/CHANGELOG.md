@@ -11,4 +11,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Initial Version
 
-[0.1.0]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/irsa-0.1.0/charts/irsa
+[0.1.0]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/irsa-0.1.0-v1beta1/charts/v1beta1/irsa
+
