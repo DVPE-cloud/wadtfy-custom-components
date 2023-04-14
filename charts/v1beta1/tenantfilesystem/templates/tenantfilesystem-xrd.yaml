@@ -37,7 +37,10 @@ spec:
                   enum: ["Orphan", "Delete"]
                 providerConfig:
                   type: string
-                  description: "Crossplane AWS ProvideConfig for Tenant Access"
+                  description: "Crossplane AWS ProviderConfig for Tenant Access"
+                providerConfigKubernetes:
+                  type: string
+                  description: "Crossplane Kubernetes ProviderConfig"
                 eksCsiDriverServiceAccount:
                   type: string
                   description: "CSI Controller and CSI Driver ServiceAccount Name"
