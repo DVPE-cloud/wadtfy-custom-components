@@ -43,7 +43,6 @@ metadata:
 spec:
   compositionRef:
     name: tenant-filesystem
-  # AWS VPC ID
   vpcId:
   # AWS VPC Subnet ID's
   vpcSubnetIdA:
