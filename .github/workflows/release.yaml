@@ -28,7 +28,7 @@ jobs:
         with:
           version: v3.10.0
 
-      - name: Run chart-releaser
+      - name: Run chart-releaser-v1
         uses: helm/chart-releaser-action@v1.5.0
         with:
           charts_dir: charts/v1/
@@ -37,7 +37,7 @@ jobs:
           CR_RELEASE_NOTES_FILE: CHANGELOG.md
           CR_RELEASE_NAME_TEMPLATE: "{{ .Name }}-{{ .Version }}-v1"
 
-      - name: Run chart-releaser
+      - name: Run chart-releaser-v1alpha1
         uses: helm/chart-releaser-action@v1.5.0
         with:
           charts_dir: charts/v1alpha1/
@@ -46,7 +46,7 @@ jobs:
           CR_RELEASE_NOTES_FILE: CHANGELOG.md
           CR_RELEASE_NAME_TEMPLATE: "{{ .Name }}-{{ .Version }}-v1alpha1"
 
-      - name: Run chart-releaser
+      - name: Run chart-releaser-v1beta1
         uses: helm/chart-releaser-action@v1.5.0
         with:
           charts_dir: charts/v1beta1/
