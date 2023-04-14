@@ -5,8 +5,8 @@ on:
     branches:
       - master
     paths:
-      - 'charts/v1/**'
-      - 'charts/v1alpha1/**'
+#      - 'charts/v1/**'
+#      - 'charts/v1alpha1/**'
       - 'charts/v1beta1/**'
 
 jobs:
@@ -28,21 +28,21 @@ jobs:
         with:
           version: v3.10.0
 
-      - name: Run chart-releaser-v1
-        uses: helm/chart-releaser-action@v1.5.0
-        with:
-          charts_dir: charts/v1/
-        env:
-          CR_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-          CR_RELEASE_NOTES_FILE: CHANGELOG.md
-
-      - name: Run chart-releaser-v1alpha1
-        uses: helm/chart-releaser-action@v1.5.0
-        with:
-          charts_dir: charts/v1alpha1/
-        env:
-          CR_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
-          CR_RELEASE_NOTES_FILE: CHANGELOG.md
+#      - name: Run chart-releaser-v1
+#        uses: helm/chart-releaser-action@v1.5.0
+#        with:
+#          charts_dir: charts/v1/
+#        env:
+#          CR_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+#          CR_RELEASE_NOTES_FILE: CHANGELOG.md
+#
+#      - name: Run chart-releaser-v1alpha1
+#        uses: helm/chart-releaser-action@v1.5.0
+#        with:
+#          charts_dir: charts/v1alpha1/
+#        env:
+#          CR_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+#          CR_RELEASE_NOTES_FILE: CHANGELOG.md
 
       - name: Run chart-releaser-v1beta1
         uses: helm/chart-releaser-action@v1.5.0
