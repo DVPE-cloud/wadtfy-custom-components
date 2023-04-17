@@ -62,7 +62,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
       - name: Run kubeconform
-        uses: shivjm/helm-kubeconform-action@@v0.2.0
+        uses: shivjm/helm-kubeconform-action@v0.2.0
         with:
           chartsDirectory: charts/v1
 
@@ -72,7 +72,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
       - name: Run kubeconform
-        uses: shivjm/helm-kubeconform-action@@v0.2.0
+        uses: shivjm/helm-kubeconform-action@v0.2.0
         with:
           chartsDirectory: charts/v1alpha1
 
@@ -82,6 +82,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@master
       - name: Run kubeconform
-        uses: shivjm/helm-kubeconform-action@@v0.2.0
+        uses: shivjm/helm-kubeconform-action@v0.2.0
         with:
           chartsDirectory: charts/v1beta1
