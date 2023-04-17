@@ -64,7 +64,7 @@ jobs:
       - name: Run kubeconform
         uses: shivjm/helm-kubeconform-action@v0.2.0
         with:
-          chartsDirectory: charts/v1
+          chartsDirectory: "charts/v1"
 
   helm-kubeconform-v1alpha1:
     runs-on: ubuntu-latest
@@ -74,7 +74,7 @@ jobs:
       - name: Run kubeconform
         uses: shivjm/helm-kubeconform-action@v0.2.0
         with:
-          chartsDirectory: charts/v1alpha1
+          chartsDirectory: "charts/v1alpha1"
 
   helm-kubeconform-v1beta1:
     runs-on: ubuntu-latest
@@ -84,4 +84,4 @@ jobs:
       - name: Run kubeconform
         uses: shivjm/helm-kubeconform-action@v0.2.0
         with:
-          chartsDirectory: charts/v1beta1
+          chartsDirectory: "charts/v1beta1"
