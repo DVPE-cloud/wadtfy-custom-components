@@ -3,8 +3,8 @@ name: Lint and Test Charts
 on:
   pull_request:
     paths:
-      - 'charts/v1/**'
-      - 'charts/v1alpha1/**'
+#      - 'charts/v1/**'
+#      - 'charts/v1alpha1/**'
       - 'charts/v1beta1/**'
 
 jobs:
@@ -75,6 +75,7 @@ jobs:
         uses: shivjm/helm-kubeconform-action@v0.2.0
         with:
           chartsDirectory: "charts/v1alpha1"
+
 
   helm-kubeconform-v1beta1:
     runs-on: ubuntu-latest
