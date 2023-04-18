@@ -206,7 +206,7 @@ spec:
                 name:
                 namespace:
           providerConfigRef:
-            name: {{ .Values.provider.kubernetes }}
+            name:
       patches:
         - fromFieldPath: "spec.eksAccountId"
           toFieldPath: "spec.forProvider.manifest.metadata.annotations[wadtfy.bmwgroup.net/cluster-account-id]"
@@ -231,3 +231,5 @@ spec:
           toFieldPath: "spec.forProvider.manifest.metadata.annotations[eks.amazonaws.com/role-arn]"
         - fromFieldPath: "spec.deletionPolicy"
           toFieldPath: "spec.deletionPolicy"
+        - fromFieldPath: "spec.providerConfigKubernetes"
+          toFieldPath: "spec.providerConfigRef.name"

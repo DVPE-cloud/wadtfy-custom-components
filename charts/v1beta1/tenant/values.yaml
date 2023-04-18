@@ -1,3 +1,1 @@
-provider:
-  # provider.kubernetes -- The name of the Kubernetes Crossplane Provider used to provision this component.
-  kubernetes:
+

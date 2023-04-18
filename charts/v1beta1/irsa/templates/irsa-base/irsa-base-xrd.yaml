@@ -39,6 +39,9 @@ spec:
                 providerConfig:
                   type: string
                   description: "Name of the Provider Config to be used by this component."
+                providerConfigKubernetes:
+                  type: string
+                  description: "The name of the K8S ProviderConfig. This value is stored in the global wadtfy-env EnvironmentConfig."
                 deletionPolicy:
                   type: string
                   description: "The deletion policy to use for this component"
@@ -51,6 +54,7 @@ spec:
                 - iamOidcProviderId
                 - region
                 - providerConfig
+                - providerConfigKubernetes
             status:
               type: object
               properties:
