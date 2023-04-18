@@ -49,3 +49,6 @@ spec:
         - type: FromEnvironmentFieldPath
           fromFieldPath: "providerConfig"
           toFieldPath: "spec.providerConfig"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "providerConfigKubernetes"
+          toFieldPath: "spec.providerConfigKubernetes"

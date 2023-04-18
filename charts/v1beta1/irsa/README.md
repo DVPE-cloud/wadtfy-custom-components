@@ -1,6 +1,6 @@
 # irsa
 
-![Version: 0.1.0-v1beta1](https://img.shields.io/badge/Version-0.1.0--v1beta1-informational?style=flat-square)
+![Version: 0.2.0-v1beta1](https://img.shields.io/badge/Version-0.2.0--v1beta1-informational?style=flat-square)
 
 Helm chart for installing a custom irsa crossplane xrd.
 
@@ -22,13 +22,3 @@ helm repo update
 ```sh
 helm install irsa . -f values.yaml
 ```
-
-## Configuration
-
-The following table lists the configurable parameters of the chart and its default values.
-
-## Values
-
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| provider.kubernetes | string | `nil` | The name of the Kubernetes Crossplane Provider used to provision this component. |
