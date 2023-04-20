@@ -1,0 +1,56 @@
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: tenantfilesystem-abstraction
+spec:
+  writeConnectionSecretsToNamespace: crossplane-system
+  compositeTypeRef:
+    apiVersion: wadtfy.bmwgroup.net/v1beta1
+    kind: XTenantFilesystemAbstraction
+  resources:
+    - name: aws-kms-key
+      base:
+        apiVersion: kms.aws.crossplane.io/v1alpha1
+        kind: Key
+        metadata:
+          name: {{ .Values.components.global.name }}
+          labels:
+            crossplane/xrd-kind: xtenantfilesystemabstractions.wadtfy.bmwgroup.net
+            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
+        spec:
+          deletionPolicy: {{ .Values.components.global.deletionPolicy }}
+          forProvider:
+            tags:
+              - tagKey: "wadtfy.bmwgroup.net/xrd-type"
+                tagValue: "XTenantFilesystemAbstraction"
+              - tagKey: "wadtfy.bmwgroup.net/xrd-version"
+                tagValue: "v1beta1"
+              {{- range $tagKey, $tagValue := .Values.tags }}
+              - tagKey: {{ $tagKey }}
+                tagValue: {{ $tagValue }}
+              {{- end }}
+            enableKeyRotation: true
+            enabled: true
+            policy: |
+              {
+                "Version": "2012-10-17",
+                "Id": "key-policy",
+                "Statement": [
+                  {
+                    "Sid": "Enable IAM User Permissions",
+                    "Effect": "Allow",
+                    "Principal": {
+                      "AWS": "arn:aws:iam::{{ .Values.config.tenant.awsAccountId }}:root"
+                    },
+                    "Action": "kms:*",
+                    "Resource": "*"
+                  }
+                ]
+              }
+            region: {{ .Values.components.global.region }}
+          providerConfigRef:
+            name: {{ .Values.providerConfig.aws }}
+      patches:
+        - type: ToCompositeFieldPath
+          fromFieldPath: metadata.name
+          toFieldPath: spec.status.kmsKeyRefName

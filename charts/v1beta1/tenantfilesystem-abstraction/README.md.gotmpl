@@ -1,0 +1,29 @@
+{{ template "chart.header" . }}
+{{ template "chart.versionBadge" . }}
+
+{{ template "chart.description" . }}
+
+## Installation
+Installs custom wadtfy tenantfilesystem-abstraction crossplane chart.
+
+**Preconditions**:
+* [Crossplane](https://crossplane.io) needs to be installed on Kubernetes.
+
+### Add Helm repository
+
+```shell
+helm repo add wadtfy-custom-component https://dvpe-cloud.github.io/wadtfy-custom-components
+helm repo update
+```
+
+## Install wadtfy tenantfilesystem-abstraction chart
+
+```sh
+helm install tenantfilesystem-abstraction . -f values.yaml
+```
+
+## Configuration
+
+The following table lists the configurable parameters of the chart and its default values.
+
+{{ template "chart.valuesSection" . }}
