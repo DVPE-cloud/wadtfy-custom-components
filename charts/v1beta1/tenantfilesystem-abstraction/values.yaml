@@ -1,18 +1,18 @@
 config:
   tenant:
-    awsAccountId:
+    awsAccountId: ""
 
 components:
   global:
-    name:
-    region:
-    deletionPolicy:
+    name: ""
+    region: ""
+    deletionPolicy: ""
 
 providerConfig:
-  aws:
-  k8s:
+  aws: ""
+  k8s: ""
 
 tags:
-  "wadtfy.bmwgroup.net/component-name":
-  "wadtfy.bmwgroup.net/cluster-account-id":
-  "wadtfy.bmwgroup.net/product-name":
+  "wadtfy.bmwgroup.net/component-name": ""
+  "wadtfy.bmwgroup.net/cluster-account-id": ""
+  "wadtfy.bmwgroup.net/product-name": ""
