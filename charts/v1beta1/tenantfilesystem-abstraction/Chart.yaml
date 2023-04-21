@@ -2,5 +2,5 @@ apiVersion: v2
 appVersion: "1.1"
 name: tenantfilesystem-abstraction
 description: Abstracted helm blueprint for Tenant EFS Filesystems
-version: 0.0.2-v1beta1
+version: 0.0.3-v1beta1
 home: https://github.com/DVPE-cloud/wadtfy-custom-components
