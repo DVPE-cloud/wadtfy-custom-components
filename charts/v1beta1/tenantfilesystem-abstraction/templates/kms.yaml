@@ -12,7 +12,7 @@ spec:
         tagValue: "v1beta1"
       {{- range $tagKey, $tagValue := .Values.tags }}
       - tagKey: {{ $tagKey }}
-        tagValue: {{ $tagValue }}
+        tagValue: {{ $tagValue | quote }}
       {{- end }}
     enableKeyRotation: true
     enabled: true
