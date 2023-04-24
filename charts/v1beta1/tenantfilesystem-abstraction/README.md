@@ -37,4 +37,9 @@ The following table lists the configurable parameters of the chart and its defau
 | config.tenant.awsAccountId | string | `""` |  |
 | providerConfig.aws | string | `""` |  |
 | providerConfig.k8s | string | `""` |  |
-| tags | string | `nil` |  |
+| tags[0].tagKey | string | `"wadtfy.bmwgroup.net/component-name"` |  |
+| tags[0].tagValue | string | `""` |  |
+| tags[1].tagKey | string | `"wadtfy.bmwgroup.net/cluster-account-id"` |  |
+| tags[1].tagValue | string | `""` |  |
+| tags[2].tagKey | string | `"wadtfy.bmwgroup.net/product-name"` |  |
+| tags[2].tagValue | string | `""` |  |

@@ -13,3 +13,9 @@ providerConfig:
   k8s: ""
 
 tags:
+  - tagKey: "wadtfy.bmwgroup.net/component-name"
+    tagValue: ""
+  - tagKey: "wadtfy.bmwgroup.net/cluster-account-id"
+    tagValue: ""
+  - tagKey: "wadtfy.bmwgroup.net/product-name"
+    tagValue: ""
