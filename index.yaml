@@ -253,6 +253,16 @@ entries:
   tenantfilesystem-abstraction:
   - apiVersion: v2
     appVersion: "1.1"
+    created: "2023-04-24T06:01:26.65570986Z"
+    description: Abstracted helm blueprint for Tenant EFS Filesystems
+    digest: e9e6e626b7e0c24ed35a5efcec4c6199ec14ea24491821fc2a7ab03c6466c365
+    home: https://github.com/DVPE-cloud/wadtfy-custom-components
+    name: tenantfilesystem-abstraction
+    urls:
+    - https://github.com/DVPE-cloud/wadtfy-custom-components/releases/download/tenantfilesystem-abstraction-0.0.5-v1beta1/tenantfilesystem-abstraction-0.0.5-v1beta1.tgz
+    version: 0.0.5-v1beta1
+  - apiVersion: v2
+    appVersion: "1.1"
     created: "2023-04-21T13:04:06.083106033Z"
     description: Abstracted helm blueprint for Tenant EFS Filesystems
     digest: b3e77846d1316cd4c448cb14884795c2e53e597253d5fc1707d1df675d1b6204
@@ -281,4 +291,4 @@ entries:
     urls:
     - https://github.com/DVPE-cloud/wadtfy-custom-components/releases/download/tenantfilesystem-abstraction-0.0.2-v1beta1/tenantfilesystem-abstraction-0.0.2-v1beta1.tgz
     version: 0.0.2-v1beta1
-generated: "2023-04-21T13:04:06.083314033Z"
+generated: "2023-04-24T06:01:26.65574996Z"
