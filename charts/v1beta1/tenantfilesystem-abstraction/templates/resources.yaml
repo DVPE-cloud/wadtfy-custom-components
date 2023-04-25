@@ -1,0 +1,19 @@
+{{- range $index, $subnet := .Values.components.mounttarget.subnetIds }}
+---
+apiVersion: efs.aws.crossplane.io/v1alpha1
+kind: MountTarget
+metadata:
+  labels:
+    crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+    crossplane/xrd-helm_chart_version: {{ $.Chart.Version }}
+spec:
+  forProvider:
+    fileSystemIDRef:
+      name: {{ $.Values.components.global.name }}-{{ $index }}
+    region: {{ $.Values.components.global.region }}
+    securityGroupsRefs:
+      - name: {{ $.Values.components.global.name }}
+    subnetID: {{ $subnet }}
+  providerConfigRef:
+    name: {{ $.Values.providerConfig.aws }}
+{{- end }}
