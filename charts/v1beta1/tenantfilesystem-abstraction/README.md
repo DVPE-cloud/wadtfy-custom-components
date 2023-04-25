@@ -1,6 +1,6 @@
 # tenantfilesystem-abstraction
 
-![Version: 0.0.6-v1beta1](https://img.shields.io/badge/Version-0.0.6--v1beta1-informational?style=flat-square)
+![Version: 0.1.0-v1beta1](https://img.shields.io/badge/Version-0.1.0--v1beta1-informational?style=flat-square)
 
 Abstracted helm blueprint for Tenant EFS Filesystems
 
@@ -34,12 +34,5 @@ The following table lists the configurable parameters of the chart and its defau
 | components.global.deletionPolicy | string | `""` |  |
 | components.global.name | string | `""` |  |
 | components.global.region | string | `""` |  |
-| config.tenant.awsAccountId | string | `""` |  |
+| components.mounttarget.subnetIds | string | `nil` |  |
 | providerConfig.aws | string | `""` |  |
-| providerConfig.k8s | string | `""` |  |
-| tags[0].tagKey | string | `"wadtfy.bmwgroup.net/component-name"` |  |
-| tags[0].tagValue | string | `""` |  |
-| tags[1].tagKey | string | `"wadtfy.bmwgroup.net/cluster-account-id"` |  |
-| tags[1].tagValue | string | `""` |  |
-| tags[2].tagKey | string | `"wadtfy.bmwgroup.net/product-name"` |  |
-| tags[2].tagValue | string | `""` |  |

@@ -1,21 +1,15 @@
-config:
-  tenant:
-    awsAccountId: ""
-
 components:
   global:
     name: ""
     region: ""
     deletionPolicy: ""
+  mounttarget:
+    subnetIds:
 
 providerConfig:
   aws: ""
-  k8s: ""
 
-tags:
-  - tagKey: "wadtfy.bmwgroup.net/component-name"
-    tagValue: ""
-  - tagKey: "wadtfy.bmwgroup.net/cluster-account-id"
-    tagValue: ""
-  - tagKey: "wadtfy.bmwgroup.net/product-name"
-    tagValue: ""
+#tags:
+#  "wadtfy.bmwgroup.net/component-name": ""
+#  "wadtfy.bmwgroup.net/cluster-account-id": ""
+#  "wadtfy.bmwgroup.net/product-name": ""
