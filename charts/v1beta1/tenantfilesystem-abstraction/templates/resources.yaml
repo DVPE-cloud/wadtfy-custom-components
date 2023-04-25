@@ -10,10 +10,10 @@ metadata:
 spec:
   forProvider:
     fileSystemIDRef:
-      name: {{ $.Values.components.global.name }}-{{ $index }}
+      name: {{ $.Values.components.mounttarget.fileSystemIDRef.name }}
     region: {{ $.Values.components.global.region }}
     securityGroupsRefs:
-      - name: {{ $.Values.components.global.name }}
+      - name: {{ $.Values.components.mounttarget.securityGroupRef.name }}
     subnetID: {{ $subnet }}
   providerConfigRef:
     name: {{ $.Values.providerConfig.aws }}

@@ -4,6 +4,10 @@ components:
     region: ""
     deletionPolicy: ""
   mounttarget:
+    fileSystemIDRef:
+      name:
+    securityGroupRef:
+      name:
     subnetIds:
 
 providerConfig:
