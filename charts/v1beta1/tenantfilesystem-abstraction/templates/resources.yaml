@@ -6,6 +6,7 @@ metadata:
   labels:
     crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
     crossplane/xrd-helm_chart_version: {{ $.Chart.Version }}
+  name: {{ $.Values.components.global.name }}-mt-{{ $index }}
 spec:
   forProvider:
     fileSystemIDRef:

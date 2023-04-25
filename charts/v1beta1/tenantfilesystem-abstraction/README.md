@@ -1,6 +1,6 @@
 # tenantfilesystem-abstraction
 
-![Version: 0.1.0-v1beta1](https://img.shields.io/badge/Version-0.1.0--v1beta1-informational?style=flat-square)
+![Version: 0.1.1-v1beta1](https://img.shields.io/badge/Version-0.1.1--v1beta1-informational?style=flat-square)
 
 Abstracted helm blueprint for Tenant EFS Filesystems
 
