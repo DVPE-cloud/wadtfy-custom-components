@@ -1,0 +1,6 @@
+apiVersion: v2
+appVersion: "1.1"
+name: tenantfilesystem-mounttargets
+description: Helm blueprint for Tenant Filesystem Mounttargets.
+version: 0.2.0-v1beta1
+home: https://github.com/DVPE-cloud/wadtfy-custom-components

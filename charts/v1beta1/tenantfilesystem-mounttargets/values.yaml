@@ -12,8 +12,3 @@ components:
 
 providerConfig:
   aws: ""
-
-#tags:
-#  "wadtfy.bmwgroup.net/component-name": ""
-#  "wadtfy.bmwgroup.net/cluster-account-id": ""
-#  "wadtfy.bmwgroup.net/product-name": ""
