@@ -1,11 +1,11 @@
-# tenantfilesystem-abstraction
+# tenantfilesystem-mounttargets
 
-![Version: 0.1.2-v1beta1](https://img.shields.io/badge/Version-0.1.2--v1beta1-informational?style=flat-square)
+![Version: 0.2.0-v1beta1](https://img.shields.io/badge/Version-0.2.0--v1beta1-informational?style=flat-square)
 
-Abstracted helm blueprint for Tenant EFS Filesystems
+Helm blueprint for Tenant Filesystem Mounttargets.
 
 ## Installation
-Installs custom wadtfy tenantfilesystem-abstraction crossplane chart.
+Installs custom wadtfy tenantfilesystem-mounttargets crossplane chart.
 
 **Preconditions**:
 * [Crossplane](https://crossplane.io) needs to be installed on Kubernetes.
@@ -17,10 +17,10 @@ helm repo add wadtfy-custom-component https://dvpe-cloud.github.io/wadtfy-custom
 helm repo update
 ```
 
-## Install wadtfy tenantfilesystem-abstraction chart
+## Install wadtfy tenantfilesystem-mounttargets chart
 
 ```sh
-helm install tenantfilesystem-abstraction . -f values.yaml
+helm install tenantfilesystem-mounttargets . -f values.yaml
 ```
 
 ## Configuration
