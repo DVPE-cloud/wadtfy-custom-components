@@ -177,7 +177,7 @@ spec:
         apiVersion: helm.crossplane.io/v1beta1
         kind: Release
         metadata:
-          name: tenantfilesystem-abstraction
+          name: tenantfilesystem-mounttargets
         spec:
           providerConfigRef:
             name:
