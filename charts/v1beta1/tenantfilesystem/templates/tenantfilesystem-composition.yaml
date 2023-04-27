@@ -778,8 +778,6 @@ spec:
         apiVersion: kubernetes.crossplane.io/v1alpha1
         kind: Object
         metadata:
-          name: ""
-          namespace: ""
           labels:
             crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
             crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
