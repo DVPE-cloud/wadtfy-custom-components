@@ -13,7 +13,7 @@ spec:
     plural: xtenantfilesystems
   claimNames:
     kind: TenantFilesystem
-    plural: tenantfilesystem
+    plural: tenantfilesystems
   versions:
     - name: v1beta1
       served: true
@@ -31,7 +31,7 @@ spec:
                 product:
                   type: string
                   description: "Tenant's product name"
-                deletePolicy:
+                deletionPolicy:
                   type: string
                   description: "Crossplane Resource delete policy"
                   enum: ["Orphan", "Delete"]
@@ -41,21 +41,20 @@ spec:
                 providerConfigKubernetes:
                   type: string
                   description: "Crossplane Kubernetes ProviderConfig"
+                providerConfigHelm:
+                  type: string
+                  description: "Crossplane Helm ProviderConfig"
                 eksCsiDriverServiceAccount:
                   type: string
                   description: "CSI Controller and CSI Driver ServiceAccount Name"
                 vpcId:
                   type: string
                   description: "Tenant VPC ID"
-                vpcSubnetIdA:
-                  type: string
-                  description: "Tenant VPC Subnet A ID"
-                vpcSubnetIdB:
-                  type: string
-                  description: "Tenant VPC Subnet B ID"
-                vpcSubnetIdC:
-                  type: string
-                  description: "Tenant VPC Subnet C ID"
+                subnetIds:
+                  type: array
+                  description: "List of Subnets in which to create mount targets."
+                  items:
+                    type: string
                 region:
                   type: string
                   description: "AWS Region in which to create network resources."
@@ -98,9 +97,7 @@ spec:
                   description: "TEMPORARY FIELD, ONLY FOR TESTING PURPOSES"
               required:
                 - vpcId
-                - vpcSubnetIdA
-                - vpcSubnetIdB
-                - vpcSubnetIdC
+                - subnetIds
                 - efsPerformanceMode
                 - efsThroughputMode
                 - storageClass

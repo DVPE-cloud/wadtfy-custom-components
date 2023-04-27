@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.0]
+
+> NOTE: This is a breaking change which is not backwards compatible with previous versions of this component.
+
+### Changed
+
+* Mount Targets can now be added as a list which allows dynamically sized VPCs to be configured with a filesystem.
+
 ## [0.4.1]
 
 ### Changed
@@ -43,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Initial Version
 
+[1.0.0]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-filesystem-1.0.0-v1beta1/charts/v1beta1/tenantfilesystem
 [0.4.1]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-filesystem-0.4.1-v1beta1/charts/v1beta1/tenantfilesystem
 [0.4.0]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-filesystem-0.4.0-v1beta1/charts/v1beta1/tenantfilesystem
 [0.3.0]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenantfilesystem-0.3.0/charts/tenantfilesystem

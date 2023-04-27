@@ -14,16 +14,38 @@ spec:
       - type: Selector
         selector:
           matchLabels:
-          - type: Value
-            key: "category"
-            value: "wadtfy-tenant"
-          - type: FromCompositeFieldPath
-            key: "namespace"
-            valueFromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+            - type: Value
+              key: "category"
+              value: "wadtfy-tenant"
+            - type: FromCompositeFieldPath
+              key: "namespace"
+              valueFromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
   compositeTypeRef:
     apiVersion: wadtfy.bmwgroup.net/v1beta1
     kind: XTenantFilesystem
   patchSets:
+    # release patch set
+    - name: "release-namespace"
+      patches:
+        - fromFieldPath: metadata.labels[crossplane.io/claim-namespace]
+          toFieldPath: spec.forProvider.namespace
+
+    - name: "component-name"
+      patches:
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "spec.product"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+            strategy: string
+            string:
+              fmt: "%s-%s-%s"
+          toFieldPath: spec.forProvider.values.components.global.name
+          policy:
+            fromFieldPath: Required
+
+    # common patch sets
     - name: "metadata"
       patches:
         - type: CombineFromComposite
@@ -34,8 +56,10 @@ spec:
               - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
             strategy: string
             string:
-              fmt: "efs-%s-%s-%s"
-          toFieldPath: "metadata.name"
+              fmt: "%s-%s-%s"
+          toFieldPath: metadata.name
+          policy:
+            fromFieldPath: Required
     - name: "tags"
       patches:
         - fromFieldPath: "metadata.name"
@@ -71,7 +95,7 @@ spec:
             fromFieldPath: Required
     - name: "deletionPolicy"
       patches:
-        - fromFieldPath: "spec.deletePolicy"
+        - fromFieldPath: "spec.deletionPolicy"
           toFieldPath: "spec.deletionPolicy"
     - name: "providerConfigRef"
       patches:
@@ -146,6 +170,48 @@ spec:
           toFieldPath: "spec.providerConfigKubernetes"
           policy:
             fromFieldPath: Required
+
+    # Create a helm release which is able to interpret complex xrd schema data
+    - name: tenant-filesystem-release
+      base:
+        apiVersion: helm.crossplane.io/v1beta1
+        kind: Release
+        metadata:
+          name: tenantfilesystem-abstraction
+        spec:
+          providerConfigRef:
+            name:
+          rollbackLimit: 0
+          forProvider:
+            skipCreateNamespace: true
+            chart:
+              name: tenantfilesystem-abstraction
+              repository: "https://dvpe-cloud.github.io/wadtfy-custom-components/"
+              version: 0.1.2-v1beta1
+      patches:
+        - type: PatchSet
+          patchSetName: metadata
+        - type: PatchSet
+          patchSetName: release-namespace
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: providerConfigHelm
+          toFieldPath: spec.providerConfigRef.name
+        - type: PatchSet
+          patchSetName: component-name
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: region
+          toFieldPath: spec.forProvider.values.components.global.region
+        - fromFieldPath: spec.deletionPolicy
+          toFieldPath: spec.forProvider.values.components.global.deletionPolicy
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: providerConfig
+          toFieldPath: spec.forProvider.values.providerConfig.aws
+        - fromFieldPath: spec.subnetIds
+          toFieldPath: spec.forProvider.values.components.mounttarget.subnetIds
+        - fromFieldPath: status.fileSystemRef
+          toFieldPath: spec.forProvider.values.components.mounttarget.fileSystemIDRef.name
+        - fromFieldPath: status.securityGroupName
+          toFieldPath: spec.forProvider.values.components.mounttarget.securityGroupRef.name
 
     # The Key Policy maybe needs to better restrict the access
     - name: aws-kms-key
@@ -289,7 +355,7 @@ spec:
         spec:
           deletionPolicy: Delete
           forProvider:
-            path: "/wadtfy/xtenantfilesystem/"
+            path: "/wadtfy/tenantfilesystem/"
             tags:
               - key: "wadtfy.bmwgroup.net/xrd-type"
                 value: "XTenantFileSystem"
@@ -485,11 +551,11 @@ spec:
             description: Tenant StorageClass for EFS
             groupName: ""
             ingress:
-            - fromPort: 2049
-              ipProtocol: tcp
-              ipRanges:
-              - cidrIp: ""
-              toPort: 2049
+              - fromPort: 2049
+                ipProtocol: tcp
+                ipRanges:
+                  - cidrIp: ""
+                toPort: 2049
             region: ""
             vpcId: ""
           providerConfigRef:
@@ -523,144 +589,6 @@ spec:
         - type: ToCompositeFieldPath
           fromFieldPath: "metadata.name"
           toFieldPath: "status.securityGroupName"
-
-    - name: aws-efs-mounttarget-1
-      base:
-        apiVersion: efs.aws.crossplane.io/v1alpha1
-        kind: MountTarget
-        metadata:
-          labels:
-            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
-            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
-        spec:
-          forProvider:
-            fileSystemIDRef:
-              name: ""
-            region: ""
-            securityGroupsRefs:
-              - name: ""
-            subnetID: ""
-          providerConfigRef:
-            name: ""
-      patches:
-        - type: PatchSet
-          patchSetName: "providerConfigRef"
-        - type: PatchSet
-          patchSetName: "region"
-        - type: CombineFromComposite
-          combine:
-            variables:
-              - fromFieldPath: "spec.product"
-              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
-              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
-            strategy: string
-            string:
-              fmt: "efs-%s-%s-%s-1"
-          toFieldPath: "metadata.name"
-        - fromFieldPath: "status.fileSystemRef"
-          toFieldPath: "spec.forProvider.fileSystemIDRef.name"
-          policy:
-            fromFieldPath: Required
-        - fromFieldPath: "status.securityGroupName"
-          toFieldPath: "spec.forProvider.securityGroupsRefs[0].name"
-          policy:
-            fromFieldPath: Required
-        - fromFieldPath: "spec.vpcSubnetIdA"
-          toFieldPath: "spec.forProvider.subnetID"
-          policy:
-            fromFieldPath: Required
-
-    - name: aws-efs-mounttarget-2
-      base:
-        apiVersion: efs.aws.crossplane.io/v1alpha1
-        kind: MountTarget
-        metadata:
-          labels:
-            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
-            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
-        spec:
-          forProvider:
-            fileSystemIDRef:
-              name: ""
-            region: ""
-            securityGroupsRefs:
-              - name: ""
-            subnetID: ""
-          providerConfigRef:
-            name: ""
-      patches:
-        - type: PatchSet
-          patchSetName: "providerConfigRef"
-        - type: PatchSet
-          patchSetName: "region"
-        - type: CombineFromComposite
-          combine:
-            variables:
-              - fromFieldPath: "spec.product"
-              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
-              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
-            strategy: string
-            string:
-              fmt: "efs-%s-%s-%s-2"
-          toFieldPath: "metadata.name"
-        - fromFieldPath: "status.fileSystemRef"
-          toFieldPath: "spec.forProvider.fileSystemIDRef.name"
-          policy:
-            fromFieldPath: Required
-        - fromFieldPath: "status.securityGroupName"
-          toFieldPath: "spec.forProvider.securityGroupsRefs[0].name"
-          policy:
-            fromFieldPath: Required
-        - fromFieldPath: "spec.vpcSubnetIdB"
-          toFieldPath: "spec.forProvider.subnetID"
-          policy:
-            fromFieldPath: Required
-
-    - name: aws-efs-mounttarget-3
-      base:
-        apiVersion: efs.aws.crossplane.io/v1alpha1
-        kind: MountTarget
-        metadata:
-          labels:
-            crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
-            crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
-        spec:
-          forProvider:
-            fileSystemIDRef:
-              name: ""
-            region: ""
-            securityGroupsRefs:
-              - name: ""
-            subnetID: ""
-          providerConfigRef:
-            name: ""
-      patches:
-        - type: PatchSet
-          patchSetName: "providerConfigRef"
-        - type: PatchSet
-          patchSetName: "region"
-        - type: CombineFromComposite
-          combine:
-            variables:
-              - fromFieldPath: "spec.product"
-              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
-              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
-            strategy: string
-            string:
-              fmt: "efs-%s-%s-%s-3"
-          toFieldPath: "metadata.name"
-        - fromFieldPath: "status.fileSystemRef"
-          toFieldPath: "spec.forProvider.fileSystemIDRef.name"
-          policy:
-            fromFieldPath: Required
-        - fromFieldPath: "status.securityGroupName"
-          toFieldPath: "spec.forProvider.securityGroupsRefs[0].name"
-          policy:
-            fromFieldPath: Required
-        - fromFieldPath: "spec.vpcSubnetIdC"
-          toFieldPath: "spec.forProvider.subnetID"
-          policy:
-            fromFieldPath: Required
 
     - name: k8s-storageclass-secret
       base:
@@ -708,7 +636,7 @@ spec:
               - fromFieldPath: "status.roleName"
             strategy: string
             string:
-              fmt: "arn:aws:iam::%s:role/wadtfy/xtenantfilesystem/%s"
+              fmt: "arn:aws:iam::%s:role/wadtfy/tenantfilesystem/%s"
           toFieldPath: "spec.forProvider.manifest.data.awsRoleArn"
           transforms:
             - type: string
@@ -740,8 +668,8 @@ spec:
                 annotations:
                   wadtfy.bmwgroup.net/restricted-namespaces: ""
               mountOptions:
-              - tls
-              - iam
+                - tls
+                - iam
               parameters:
                 az: ""
                 csi.storage.k8s.io/provisioner-secret-name: ""
@@ -811,13 +739,13 @@ spec:
                 name:
                 namespace:
               rules:
-              - apiGroups:
-                - ""
-                resources:
-                - secrets
-                verbs:
-                - get
-                - list
+                - apiGroups:
+                    - ""
+                  resources:
+                    - secrets
+                  verbs:
+                    - get
+                    - list
           providerConfigRef:
             name: ""
       patches:
@@ -869,9 +797,9 @@ spec:
                 kind: Role
                 name:
               subjects:
-              - kind: ServiceAccount
-                name: kube-system-sa
-                namespace: kube-system
+                - kind: ServiceAccount
+                  name: kube-system-sa
+                  namespace: kube-system
           providerConfigRef:
             name: ""
       patches:
