@@ -185,9 +185,9 @@ spec:
           forProvider:
             skipCreateNamespace: true
             chart:
-              name: tenantfilesystem-abstraction
+              name: tenantfilesystem-mounttargets
               repository: "https://dvpe-cloud.github.io/wadtfy-custom-components/"
-              version: 0.1.2-v1beta1
+              version: 0.2.0-v1beta1
       patches:
         - type: PatchSet
           patchSetName: metadata
