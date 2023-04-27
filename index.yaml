@@ -214,6 +214,25 @@ entries:
   tenant-filesystem:
   - apiVersion: v2
     appVersion: "1.1"
+    created: "2023-04-27T06:58:02.488450901Z"
+    description: Helm Chart for installing a custom tenantfilesystem xrd
+    digest: 72ed30524faef303855b27c26ec3808a2f069aa7b151ec30a609f3e2388663c4
+    home: https://github.com/DVPE-cloud/wadtfy-custom-components
+    keywords:
+    - crossplane
+    - tenant-filesystem
+    - efs
+    - gitops
+    maintainers:
+    - name: mithie
+    - name: herrLierb
+    - name: crimbler2
+    name: tenant-filesystem
+    urls:
+    - https://github.com/DVPE-cloud/wadtfy-custom-components/releases/download/tenant-filesystem-1.1.0-v1beta1/tenant-filesystem-1.1.0-v1beta1.tgz
+    version: 1.1.0-v1beta1
+  - apiVersion: v2
+    appVersion: "1.1"
     created: "2023-04-14T12:06:33.004457451Z"
     description: Helm Chart for installing a custom tenantfilesystem xrd
     digest: a8fcc39bc0ed08857f0cdae9de424de23cadecfad8b3358b004750f9bdc313a5
@@ -331,4 +350,4 @@ entries:
     urls:
     - https://github.com/DVPE-cloud/wadtfy-custom-components/releases/download/tenantfilesystem-abstraction-0.0.2-v1beta1/tenantfilesystem-abstraction-0.0.2-v1beta1.tgz
     version: 0.0.2-v1beta1
-generated: "2023-04-25T13:02:24.466239063Z"
+generated: "2023-04-27T06:58:02.488518105Z"
