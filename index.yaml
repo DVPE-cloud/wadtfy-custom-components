@@ -350,4 +350,15 @@ entries:
     urls:
     - https://github.com/DVPE-cloud/wadtfy-custom-components/releases/download/tenantfilesystem-abstraction-0.0.2-v1beta1/tenantfilesystem-abstraction-0.0.2-v1beta1.tgz
     version: 0.0.2-v1beta1
-generated: "2023-04-27T06:58:02.488518105Z"
+  tenantfilesystem-mounttargets:
+  - apiVersion: v2
+    appVersion: "1.1"
+    created: "2023-04-27T07:03:54.364835149Z"
+    description: Helm blueprint for Tenant Filesystem Mounttargets.
+    digest: 53708f79acd00a17c26fb96f1d373ae850912e9f51b01bbcb0a90cafc4c8472c
+    home: https://github.com/DVPE-cloud/wadtfy-custom-components
+    name: tenantfilesystem-mounttargets
+    urls:
+    - https://github.com/DVPE-cloud/wadtfy-custom-components/releases/download/tenantfilesystem-mounttargets-0.2.0-v1beta1/tenantfilesystem-mounttargets-0.2.0-v1beta1.tgz
+    version: 0.2.0-v1beta1
+generated: "2023-04-27T07:03:54.36488035Z"
