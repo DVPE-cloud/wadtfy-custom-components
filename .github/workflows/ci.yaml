@@ -56,32 +56,33 @@ jobs:
       - name: Run helm-docs
         run: .github/helm-docs.sh
 
-#  helm-kubeval-v1:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@master
-#      - name: Run helm-kubeval
-#        uses: desaintmartin/helm-kubeval-action@master
-#        with:
-#          path: charts/v1/.
-#
-#  helm-kubeval-v1alpha1:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@master
-#      - name: Run helm-kubeval
-#        uses: desaintmartin/helm-kubeval-action@master
-#        with:
-#          path: charts/v1alpha1/.
-
-  helm-kubeval-v1beta1:
+  helm-kubeconform-v1:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@master
-      - name: Run helm-kubeval
-        uses: desaintmartin/helm-kubeval-action@master
+      - name: Run kubeconform
+        uses: shivjm/helm-kubeconform-action@v0.2.0
         with:
-          path: charts/v1beta1/.
+          chartsDirectory: "charts/v1"
+
+  helm-kubeconform-v1alpha1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Run kubeconform
+        uses: shivjm/helm-kubeconform-action@v0.2.0
+        with:
+          chartsDirectory: "charts/v1alpha1"
+
+
+  helm-kubeconform-v1beta1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@master
+      - name: Run kubeconform
+        uses: shivjm/helm-kubeconform-action@v0.2.0
+        with:
+          chartsDirectory: "charts/v1beta1"
