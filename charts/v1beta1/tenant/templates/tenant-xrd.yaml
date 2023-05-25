@@ -28,9 +28,6 @@ spec:
                 product:
                   type: string
                   description: "Tenant's product name."
-                region:
-                  type: string
-                  description: "Tenant's AWS Account region."
                 awsAccountId:
                   type: string
                   description: "The AWS account id for which to create namespaces on the Kubernetes cluster."
