@@ -44,7 +44,7 @@ spec:
           fromFieldPath: "iamOidcProviderId"
           toFieldPath: "spec.iamOidcProviderId"
         - type: FromEnvironmentFieldPath
-          fromFieldPath: "region"
+          fromFieldPath: "awsRegion"
           toFieldPath: "spec.region"
         - type: FromEnvironmentFieldPath
           fromFieldPath: "providerConfig"
