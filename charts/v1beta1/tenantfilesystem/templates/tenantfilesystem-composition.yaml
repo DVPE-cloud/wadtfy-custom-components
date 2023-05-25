@@ -470,7 +470,8 @@ spec:
                       "Action": [
                         "elasticfilesystem:DescribeFileSystems",
                         "elasticfilesystem:DescribeMountTargets",
-                        "elasticfilesystem:CreateAccessPoint"
+                        "elasticfilesystem:CreateAccessPoint",
+                        "elasticfilesystem:TagResource"
                       ],
                       "Resource": "arn:aws:elasticfilesystem:%s:%s:file-system/%s"
                     },
