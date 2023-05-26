@@ -87,12 +87,6 @@ spec:
                 toType: string
         - fromFieldPath: "spec.product"
           toFieldPath: "spec.forProvider.tags[4].value"
-    - name: "region"
-      patches:
-        - fromFieldPath: "spec.region"
-          toFieldPath: "spec.forProvider.region"
-          policy:
-            fromFieldPath: Required
     - name: "deletionPolicy"
       patches:
         - fromFieldPath: "spec.deletionPolicy"
@@ -250,8 +244,6 @@ spec:
         - type: PatchSet
           patchSetName: "tags"
         - type: PatchSet
-          patchSetName: "region"
-        - type: PatchSet
           patchSetName: "deletionPolicy"
         - type: FromEnvironmentFieldPath
           fromFieldPath: "awsAccountId"
@@ -275,6 +267,8 @@ spec:
                       }
                     ]
                   }
+        - fromFieldPath: "spec.region"
+          toFieldPath: "spec.forProvider.region"
         - type: ToCompositeFieldPath
           fromFieldPath: "metadata.name"
           toFieldPath: "status.kmsKeyRefName"
@@ -317,9 +311,9 @@ spec:
         - type: PatchSet
           patchSetName: "tagsV2"
         - type: PatchSet
-          patchSetName: "region"
-        - type: PatchSet
           patchSetName: "deletionPolicy"
+        - fromFieldPath: "spec.region"
+          toFieldPath: "spec.forProvider.region"
         - fromFieldPath: "status.kmsKeyRefName"
           toFieldPath: "spec.forProvider.kmsKeyIdRef.name"
           policy:
@@ -569,14 +563,14 @@ spec:
         - type: PatchSet
           patchSetName: "tagsV2"
         - type: PatchSet
-          patchSetName: "region"
-        - type: PatchSet
           patchSetName: "deletionPolicy"
         - type: FromEnvironmentFieldPath
           fromFieldPath: "eksCidrIp"
           toFieldPath: "spec.forProvider.ingress[0].ipRanges[0].cidrIp"
           policy:
             fromFieldPath: Required
+        - fromFieldPath: "spec.region"
+          toFieldPath: "spec.forProvider.region"
         - fromFieldPath: "spec.vpcId"
           toFieldPath: "spec.forProvider.vpcId"
           policy:
