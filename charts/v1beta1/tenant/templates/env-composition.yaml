@@ -1,10 +1,10 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: tenant-env
+  name: tenant-env-ismail-ismail
 spec:
   writeConnectionSecretsToNamespace: crossplane-system
   compositeTypeRef:
-    apiVersion: wadtfy.bmwgroup.net/v1beta1
+    apiVersion: ismail.bmwgroup.net/v1beta1
     kind: XTenantEnv
   resources:

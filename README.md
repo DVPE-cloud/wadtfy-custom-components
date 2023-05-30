@@ -1,3 +1,7 @@
+# THIS BRANCH SHOULD NOT BE MERGED INTO MASTER
+# ITS PURPOSE IS THE DELETION OF THE DUPLICATE TYPES (ismail.bmwgroup.net)
+# DO NOT DELETE WITHOUT ASKING ME (@crimbler2)
+
 # wadtfy-custom-components
 Contains a set of custom Crossplane components used in the WADTFY ecosystem.
 

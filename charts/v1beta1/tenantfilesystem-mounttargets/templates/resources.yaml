@@ -4,7 +4,7 @@ apiVersion: efs.aws.crossplane.io/v1alpha1
 kind: MountTarget
 metadata:
   labels:
-    crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+    crossplane/xrd-kind: xtenantfilesystem.ismail.bmwgroup.net
     crossplane/xrd-helm_chart_version: {{ $.Chart.Version }}
   name: {{ $.Values.components.global.name }}-mt-{{ $index }}
 spec:

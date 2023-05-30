@@ -5,9 +5,9 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: xtenantfilesystems.wadtfy.bmwgroup.net
+  name: xtenantfilesystems.ismail.bmwgroup.net
 spec:
-  group: wadtfy.bmwgroup.net
+  group: ismail.bmwgroup.net
   names:
     kind: XTenantFilesystem
     plural: xtenantfilesystems

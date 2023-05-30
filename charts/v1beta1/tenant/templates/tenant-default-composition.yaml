@@ -1,9 +1,9 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: tenant-default
+  name: tenant-default-ismail
   labels:
-    crossplane.io/xrd: xtenantconfigs.wadtfy.bmwgroup.net
+    crossplane.io/xrd: xtenantconfigs.ismail.bmwgroup.net
 spec:
   writeConnectionSecretsToNamespace: crossplane-system
   environment:
@@ -12,22 +12,22 @@ spec:
         ref:
           name: wadtfy-env
   compositeTypeRef:
-    apiVersion: wadtfy.bmwgroup.net/v1beta1
+    apiVersion: ismail.bmwgroup.net/v1beta1
     kind: XTenant
   patchSets:
     - name: "k8s-tags"
       patches:
         - type: FromEnvironmentFieldPath
           fromFieldPath: "eksAccountID"
-          toFieldPath: "spec.forProvider.manifest.metadata.annotations[wadtfy.bmwgroup.net/cluster-account-id]"
+          toFieldPath: "spec.forProvider.manifest.metadata.annotations[ismail.bmwgroup.net/cluster-account-id]"
         - fromFieldPath: "spec.product"
-          toFieldPath: "spec.forProvider.manifest.metadata.annotations[wadtfy.bmwgroup.net/product-name]"
+          toFieldPath: "spec.forProvider.manifest.metadata.annotations[ismail.bmwgroup.net/product-name]"
         - fromFieldPath: "metadata.name"
-          toFieldPath: "spec.forProvider.manifest.metadata.annotations[wadtfy.bmwgroup.net/component-name]"
+          toFieldPath: "spec.forProvider.manifest.metadata.annotations[ismail.bmwgroup.net/component-name]"
   resources:
     - name: TenantEnv
       base:
-        apiVersion: wadtfy.bmwgroup.net/v1beta1
+        apiVersion: ismail.bmwgroup.net/v1beta1
         kind: XTenantEnv
       patches:
         - type: FromEnvironmentFieldPath
@@ -48,11 +48,11 @@ spec:
               kind: ProviderConfig
               metadata:
                 annotations:
-                  wadtfy.bmwgroup.net/xrd-type: XTenant
-                  wadtfy.bmwgroup.net/xrd-version: v1beta1
-                  wadtfy.bmwgroup.net/cluster-account-id:
-                  wadtfy.bmwgroup.net/product-name:
-                  wadtfy.bmwgroup.net/component-name:
+                  ismail.bmwgroup.net/xrd-type: XTenant
+                  ismail.bmwgroup.net/xrd-version: v1beta1
+                  ismail.bmwgroup.net/cluster-account-id:
+                  ismail.bmwgroup.net/product-name:
+                  ismail.bmwgroup.net/component-name:
                 name:
               spec:
                 assumeRoleWithWebIdentity:
@@ -113,11 +113,11 @@ spec:
               kind: EnvironmentConfig
               metadata:
                 annotations:
-                  wadtfy.bmwgroup.net/xrd-type: XTenant
-                  wadtfy.bmwgroup.net/xrd-version: v1beta1
-                  wadtfy.bmwgroup.net/cluster-account-id:
-                  wadtfy.bmwgroup.net/product-name:
-                  wadtfy.bmwgroup.net/component-name:
+                  ismail.bmwgroup.net/xrd-type: XTenant
+                  ismail.bmwgroup.net/xrd-version: v1beta1
+                  ismail.bmwgroup.net/cluster-account-id:
+                  ismail.bmwgroup.net/product-name:
+                  ismail.bmwgroup.net/component-name:
                 labels:
                   category: "wadtfy-tenant"
                   namespace:
@@ -154,11 +154,11 @@ spec:
           toFieldPath: "spec.providerConfigRef.name"
     - name: SecretStore
       base:
-        apiVersion: wadtfy.bmwgroup.net/v1beta1
+        apiVersion: ismail.bmwgroup.net/v1beta1
         kind: XSecretStore
       patches:
         - type: FromEnvironmentFieldPath
-          fromFieldPath: "irsaTenantCompositionRef"
+          fromFieldPath: "irsaTenantCompositionRefIsmail"
           toFieldPath: "spec.irsaCompositionRef"
         - fromFieldPath: "spec.product"
           toFieldPath: "spec.product"

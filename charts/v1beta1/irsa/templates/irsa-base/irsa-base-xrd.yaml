@@ -1,9 +1,9 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: CompositeResourceDefinition
 metadata:
-  name: xirsabases.wadtfy.bmwgroup.net
+  name: xirsabases.ismail.bmwgroup.net
 spec:
-  group: wadtfy.bmwgroup.net
+  group: ismail.bmwgroup.net
   names:
     kind: XIrsaBase
     plural: xirsabases

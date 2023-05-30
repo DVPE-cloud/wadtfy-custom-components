@@ -1,7 +1,7 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: irsa-tenant
+  name: irsa-tenant-ismail-ismail
 spec:
   writeConnectionSecretsToNamespace: crossplane-system
   environment:
@@ -19,12 +19,12 @@ spec:
             key: "namespace"
             valueFromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
   compositeTypeRef:
-    apiVersion: wadtfy.bmwgroup.net/v1beta1
+    apiVersion: ismail.bmwgroup.net/v1beta1
     kind: XIrsa
   resources:
     - name: IrsaBase
       base:
-        apiVersion: wadtfy.bmwgroup.net/v1beta1
+        apiVersion: ismail.bmwgroup.net/v1beta1
         kind: XIrsaBase
       patches:
         - fromFieldPath: "spec.policyDocument"

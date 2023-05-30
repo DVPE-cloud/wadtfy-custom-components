@@ -1,11 +1,11 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: irsa-base
+  name: irsa-base-ismail-ismail
 spec:
   writeConnectionSecretsToNamespace: crossplane-system
   compositeTypeRef:
-    apiVersion: wadtfy.bmwgroup.net/v1beta1
+    apiVersion: ismail.bmwgroup.net/v1beta1
     kind: XIrsaBase
   patchSets:
     - name: "metadata"
@@ -43,15 +43,15 @@ spec:
             path: "/wadtfy/irsa/"
             assumeRolePolicyDocument:
             tags:
-              - key: "wadtfy.bmwgroup.net/xrd-type"
+              - key: "ismail.bmwgroup.net/xrd-type"
                 value: "XIrsaBase"
-              - key: "wadtfy.bmwgroup.net/xrd-version"
+              - key: "ismail.bmwgroup.net/xrd-version"
                 value: "v1beta1"
-              - key: "wadtfy.bmwgroup.net/component-name"
+              - key: "ismail.bmwgroup.net/component-name"
                 value: ""
-              - key: "wadtfy.bmwgroup.net/cluster-account-id"
+              - key: "ismail.bmwgroup.net/cluster-account-id"
                 value: ""
-              - key: "wadtfy.bmwgroup.net/product-name"
+              - key: "ismail.bmwgroup.net/product-name"
                 value: ""
           providerConfigRef:
             name:
@@ -114,15 +114,15 @@ spec:
             name:
             document:
             tags:
-              - key: "wadtfy.bmwgroup.net/xrd-type"
+              - key: "ismail.bmwgroup.net/xrd-type"
                 value: "XIrsaBase"
-              - key: "wadtfy.bmwgroup.net/xrd-version"
+              - key: "ismail.bmwgroup.net/xrd-version"
                 value: "v1beta1"
-              - key: "wadtfy.bmwgroup.net/component-name"
+              - key: "ismail.bmwgroup.net/component-name"
                 value: ""
-              - key: "wadtfy.bmwgroup.net/cluster-account-id"
+              - key: "ismail.bmwgroup.net/cluster-account-id"
                 value: ""
-              - key: "wadtfy.bmwgroup.net/product-name"
+              - key: "ismail.bmwgroup.net/product-name"
                 value: ""
           providerConfigRef:
             name:
@@ -198,22 +198,22 @@ spec:
               metadata:
                 annotations:
                   eks.amazonaws.com/role-arn:
-                  wadtfy.bmwgroup.net/xrd-type: XIrsaBase
-                  wadtfy.bmwgroup.net/xrd-version: v1beta1
-                  wadtfy.bmwgroup.net/cluster-account-id:
-                  wadtfy.bmwgroup.net/product-name:
-                  wadtfy.bmwgroup.net/component-name:
+                  ismail.bmwgroup.net/xrd-type: XIrsaBase
+                  ismail.bmwgroup.net/xrd-version: v1beta1
+                  ismail.bmwgroup.net/cluster-account-id:
+                  ismail.bmwgroup.net/product-name:
+                  ismail.bmwgroup.net/component-name:
                 name:
                 namespace:
           providerConfigRef:
             name:
       patches:
         - fromFieldPath: "spec.eksAccountId"
-          toFieldPath: "spec.forProvider.manifest.metadata.annotations[wadtfy.bmwgroup.net/cluster-account-id]"
+          toFieldPath: "spec.forProvider.manifest.metadata.annotations[ismail.bmwgroup.net/cluster-account-id]"
         - fromFieldPath: "spec.product"
-          toFieldPath: "spec.forProvider.manifest.metadata.annotations[wadtfy.bmwgroup.net/product-name]"
+          toFieldPath: "spec.forProvider.manifest.metadata.annotations[ismail.bmwgroup.net/product-name]"
         - fromFieldPath: "metadata.name"
-          toFieldPath: "spec.forProvider.manifest.metadata.annotations[wadtfy.bmwgroup.net/component-name]"
+          toFieldPath: "spec.forProvider.manifest.metadata.annotations[ismail.bmwgroup.net/component-name]"
         - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
           toFieldPath: "spec.forProvider.manifest.metadata.namespace"
         - type: CombineFromComposite
