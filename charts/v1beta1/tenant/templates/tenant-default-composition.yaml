@@ -160,9 +160,6 @@ spec:
         - type: FromEnvironmentFieldPath
           fromFieldPath: "irsaTenantCompositionRef"
           toFieldPath: "spec.irsaCompositionRef"
-        - type: FromEnvironmentFieldPath
-          fromFieldPath: "providerConfigKubernetes"
-          toFieldPath: "spec.providerConfigKubernetes"
         - fromFieldPath: "spec.product"
           toFieldPath: "spec.product"
         - fromFieldPath: "spec.awsAccountId"

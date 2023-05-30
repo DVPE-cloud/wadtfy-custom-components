@@ -163,8 +163,5 @@ spec:
         - type: FromEnvironmentFieldPath
           fromFieldPath: "eksAccountID"
           toFieldPath: "spec.awsAccountId"
-        - type: FromEnvironmentFieldPath
-          fromFieldPath: "providerConfigKubernetes"
-          toFieldPath: "spec.providerConfigKubernetes"
         - fromFieldPath: "spec.namespace"
           toFieldPath: "spec.namespace"
