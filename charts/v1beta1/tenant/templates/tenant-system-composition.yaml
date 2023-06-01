@@ -34,6 +34,32 @@ spec:
         - type: ToCompositeFieldPath
           fromFieldPath: "spec.env.awsAccountId"
           toFieldPath: "status.env.awsAccountId"
+    - name: Namespace
+      base:
+        apiVersion: wadtfy.bmwgroup.net/v1beta1
+        kind: XNamespace
+      patches:
+        - type: ToCompositeFieldPath
+          fromFieldPath: "spec.namespace"
+          toFieldPath: "spec.namespaceName"
+        - type: ToCompositeFieldPath
+          fromFieldPath: "spec.podSecurityAdmission.enforcePolicyLevel"
+          toFieldPath: "spec.enforcePolicyLevel"
+        - type: ToCompositeFieldPath
+          fromFieldPath: "spec.podSecurityAdmission.enforcePolicyVersion"
+          toFieldPath: "spec.enforcePolicyVersion"
+        - type: ToCompositeFieldPath
+          fromFieldPath: "spec.podSecurityAdmission.warnPolicyLevel"
+          toFieldPath: "spec.warnPolicyLevel"
+        - type: ToCompositeFieldPath
+          fromFieldPath: "spec.podSecurityAdmission.warnPolicyVersion"
+          toFieldPath: "spec.warnPolicyVersion"
+        - type: ToCompositeFieldPath
+          fromFieldPath: "spec.podSecurityAdmission.auditPolicyLevel"
+          toFieldPath: "spec.auditPolicyLevel"
+        - type: ToCompositeFieldPath
+          fromFieldPath: "spec.podSecurityAdmission.auditPolicyVersion"
+          toFieldPath: "spec.auditPolicyVersion"
     - name: TenantProviderConfig
       base:
         apiVersion: kubernetes.crossplane.io/v1alpha1

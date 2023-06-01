@@ -37,6 +37,32 @@ spec:
                 namespace:
                   type: string
                   description: "The namespace to be created."
+                podSecurityAdmission:
+                  type: object
+                  properties:
+                    enforcePolicyLevel:
+                      type: string
+                      description: "Enforce Policy Level"
+                      enum: ["privileged", "baseline", "restricted"]
+                    enforcePolicyVersion:
+                      type: string
+                      description: "Enforce Policy Version (default: latest)"
+                    warnPolicyLevel:
+                      type: string
+                      description: "Warning Policy Level"
+                      enum: ["privileged", "baseline", "restricted"]
+                    warnPolicyVersion:
+                      type: string
+                      description: "Warn Policy Version (default: latest)"
+                    auditPolicyLevel:
+                      type: string
+                      description: "Audit Policy Level"
+                      enum: ["privileged", "baseline", "restricted"]
+                    auditPolicyVersion:
+                      type: string
+                      description: "Audit Policy Version (default: latest)"
+                  required:
+                    - enforcePolicyLevel
               required:
                 - namespace
             status:

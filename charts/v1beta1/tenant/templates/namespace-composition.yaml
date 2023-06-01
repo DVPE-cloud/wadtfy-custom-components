@@ -1,0 +1,104 @@
+# Crossplane Composition linking the XRD with the concrete managed EFS Network resource.
+# See https://negz.github.io/crossplane.github.io/docs/v1.4/reference/composition.html#compositions for details
+
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: namespace
+spec:
+  writeConnectionSecretsToNamespace: crossplane-system
+  # environment:
+  #   environmentConfigs:
+  #     - ref:
+  #         name: wadtfy-env
+  #     - type: Selector
+  #       selector:
+  #         matchLabels:
+  #         - type: Value
+  #           key: "category"
+  #           value: "wadtfy-tenant"
+  #         - type: FromCompositeFieldPath
+  #           key: "namespace"
+  #           valueFromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+  compositeTypeRef:
+    apiVersion: wadtfy.bmwgroup.net/v1beta1
+    kind: XNamespace
+  patchSets:
+    - name: "k8s-tags"
+      patches:
+        - fromFieldPath: "metadata.name"
+          toFieldPath: "spec.forProvider.manifest.metadata.annotations[wadtfy.bmwgroup.net/component-name]"
+    - name: "name"
+      patches:
+        - fromFieldPath: "spec.namespaceName"
+          toFieldPath: "spec.forProvider.manifest.metadata.name"
+    - name: "enforcelevel"
+      patches:
+        - fromFieldPath: "spec.enforcePolicyLevel"
+          toFieldPath: "spec.forProvider.manifest.metadata.labels[pod-security.kubernetes.io/enforce]"
+    - name: "enforcelevelversion"
+      patches:
+        - fromFieldPath: "spec.enforcePolicyVersion"
+          toFieldPath: "spec.forProvider.manifest.metadata.labels[pod-security.kubernetes.io/enforce-version]"
+    - name: "warnlevel"
+      patches:
+        - fromFieldPath: "spec.warnPolicyLevel"
+          toFieldPath: "spec.forProvider.manifest.metadata.labels[pod-security.kubernetes.io/warn]"
+    - name: "warnlevelversion"
+      patches:
+        - fromFieldPath: "spec.warnPolicyVersion"
+          toFieldPath: "spec.forProvider.manifest.metadata.labels[pod-security.kubernetes.io/warn-version]"
+    - name: "auditlevel"
+      patches:
+        - fromFieldPath: "spec.auditPolicyLevel"
+          toFieldPath: "spec.forProvider.manifest.metadata.labels[pod-security.kubernetes.io/audit]"
+    - name: "auditlevelversion"
+      patches:
+        - fromFieldPath: "spec.auditPolicyVersion"
+          toFieldPath: "spec.forProvider.manifest.metadata.labels[pod-security.kubernetes.io/audit-version]"
+  resources:
+    - name: namespace
+      base:
+        apiVersion: kubernetes.crossplane.io/v1alpha1
+        kind: Object
+        metadata:
+          name: ""
+          labels:
+            wadtfy.bmwgroup.net/xrd-type: XNamespace
+            wadtfy.bmwgroup.net/xrd-version: v1beta1
+            wadtfy.bmwgroup.net/product-name: "wadtfy"
+            wadtfy.bmwgroup.net/component-name:
+        spec:
+          deletionPolicy: Orphan
+          forProvider:
+            manifest:
+              apiVersion: v1
+              kind: Namespace
+              metadata:
+                name:
+                labels:
+                  pod-security.kubernetes.io/enforce: baseline
+                  pod-security.kubernetes.io/enforce-version: latest
+                  pod-security.kubernetes.io/warn: baseline
+                  pod-security.kubernetes.io/warn-version: latest
+                  pod-security.kubernetes.io/audit: baseline
+                  pod-security.kubernetes.io/audit-version: latest
+          providerConfigRef:
+            name: kubernetes-provider
+      patches:
+        - type: PatchSet
+          patchSetName: "k8s-tags"
+        - type: PatchSet
+          patchSetName: "name"
+        - type: PatchSet
+          patchSetName: "enforcelevel"
+        - type: PatchSet
+          patchSetName: "enforcelevelversion"
+        - type: PatchSet
+          patchSetName: "warnlevel"
+        - type: PatchSet
+          patchSetName: "warnlevelversion"
+        - type: PatchSet
+          patchSetName: "auditlevel"
+        - type: PatchSet
+          patchSetName: "auditlevelversion"
