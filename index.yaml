@@ -29,6 +29,25 @@ entries:
   irsa:
   - apiVersion: v1
     appVersion: "1.1"
+    created: "2023-06-14T05:12:14.780891797Z"
+    description: Helm chart for installing a custom irsa crossplane xrd.
+    digest: 2e41511c5350448db830cef56d111b9fb535327c2ed2c08ed89e97543e4aa57b
+    home: https://github.com/DVPE-cloud/wadtfy-custom-components
+    keywords:
+    - crossplane
+    - tenant
+    - gitops
+    - irsa
+    maintainers:
+    - name: mithie
+    - name: herrLierb
+    - name: crimbler2
+    name: irsa
+    urls:
+    - https://github.com/DVPE-cloud/wadtfy-custom-components/releases/download/irsa-1.0.0-v1beta1/irsa-1.0.0-v1beta1.tgz
+    version: 1.0.0-v1beta1
+  - apiVersion: v1
+    appVersion: "1.1"
     created: "2023-04-18T08:04:38.263234822Z"
     description: Helm chart for installing a custom irsa crossplane xrd.
     digest: 6b3eeda120bcf4723a7114da78a8abe8aa5da520364807de527ffd40d80646c8
@@ -85,6 +104,24 @@ entries:
     - https://github.com/DVPE-cloud/wadtfy-custom-components/releases/download/irsa-0.1.0-v1beta1/irsa-0.1.0-v1beta1.tgz
     version: 0.1.0-v1beta1
   tenant:
+  - apiVersion: v1
+    appVersion: "1.1"
+    created: "2023-06-14T05:12:14.99172955Z"
+    description: Helm chart for installing a custom tenant crossplane xrd.
+    digest: 8da4f25b049c5e0cfb396190bbd539cd121830520f19d29ed170c9158097c72f
+    home: https://github.com/DVPE-cloud/wadtfy-custom-components
+    keywords:
+    - crossplane
+    - tenant
+    - gitops
+    maintainers:
+    - name: mithie
+    - name: herrLierb
+    - name: crimbler2
+    name: tenant
+    urls:
+    - https://github.com/DVPE-cloud/wadtfy-custom-components/releases/download/tenant-2.0.0-v1beta1/tenant-2.0.0-v1beta1.tgz
+    version: 2.0.0-v1beta1
   - apiVersion: v1
     appVersion: "1.1"
     created: "2023-04-18T08:04:38.421281468Z"
@@ -212,6 +249,25 @@ entries:
     - https://github.com/DVPE-cloud/wadtfy-custom-components/releases/download/tenant-0.1.0/tenant-0.1.0.tgz
     version: 0.1.0
   tenant-filesystem:
+  - apiVersion: v2
+    appVersion: "1.1"
+    created: "2023-06-14T05:12:15.25914081Z"
+    description: Helm Chart for installing a custom tenantfilesystem xrd
+    digest: 12c4222c20768064eb6db08b0b3fc991305c8a69d7fa1566a6bab218db613869
+    home: https://github.com/DVPE-cloud/wadtfy-custom-components
+    keywords:
+    - crossplane
+    - tenant-filesystem
+    - efs
+    - gitops
+    maintainers:
+    - name: mithie
+    - name: herrLierb
+    - name: crimbler2
+    name: tenant-filesystem
+    urls:
+    - https://github.com/DVPE-cloud/wadtfy-custom-components/releases/download/tenant-filesystem-2.0.0-v1beta1/tenant-filesystem-2.0.0-v1beta1.tgz
+    version: 2.0.0-v1beta1
   - apiVersion: v2
     appVersion: "1.1"
     created: "2023-05-25T13:49:34.842540788Z"
@@ -399,4 +455,4 @@ entries:
     urls:
     - https://github.com/DVPE-cloud/wadtfy-custom-components/releases/download/tenantfilesystem-mounttargets-0.2.0-v1beta1/tenantfilesystem-mounttargets-0.2.0-v1beta1.tgz
     version: 0.2.0-v1beta1
-generated: "2023-05-25T13:49:34.842688791Z"
+generated: "2023-06-14T05:12:15.259320313Z"
