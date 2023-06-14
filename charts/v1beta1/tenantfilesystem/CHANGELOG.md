@@ -78,6 +78,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 * Initial Version
 
+[2.1.0]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-filesystem-2.1.0-v1beta1/charts/v1beta1/tenantfilesystem
 [2.0.0]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-filesystem-2.0.0-v1beta1/charts/v1beta1/tenantfilesystem
 [1.2.0]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-filesystem-1.2.0-v1beta1/charts/v1beta1/tenantfilesystem
 [1.1.1]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-filesystem-1.1.1-v1beta1/charts/v1beta1/tenantfilesystem
