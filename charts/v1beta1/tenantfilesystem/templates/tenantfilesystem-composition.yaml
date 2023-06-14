@@ -87,12 +87,6 @@ spec:
                 toType: string
         - fromFieldPath: "spec.product"
           toFieldPath: "spec.forProvider.tags[4].value"
-    - name: "region"
-      patches:
-        - fromFieldPath: "spec.region"
-          toFieldPath: "spec.forProvider.region"
-          policy:
-            fromFieldPath: Required
     - name: "deletionPolicy"
       patches:
         - fromFieldPath: "spec.deletionPolicy"
@@ -121,9 +115,6 @@ spec:
           fromFieldPath: "awsAccountId"
           toFieldPath: "spec.env.awsAccountId"
         - type: FromEnvironmentFieldPath
-          fromFieldPath: "region"
-          toFieldPath: "spec.env.region"
-        - type: FromEnvironmentFieldPath
           fromFieldPath: "providerConfig"
           toFieldPath: "spec.env.providerConfig"
         - type: FromEnvironmentFieldPath
@@ -143,11 +134,6 @@ spec:
         - type: ToCompositeFieldPath
           fromFieldPath: "spec.env.awsAccountId"
           toFieldPath: "spec.awsAccountId"
-          policy:
-            fromFieldPath: Required
-        - type: ToCompositeFieldPath
-          fromFieldPath: "spec.env.region"
-          toFieldPath: "spec.region"
           policy:
             fromFieldPath: Required
         - type: ToCompositeFieldPath
@@ -198,8 +184,7 @@ spec:
           toFieldPath: spec.providerConfigRef.name
         - type: PatchSet
           patchSetName: component-name
-        - type: FromEnvironmentFieldPath
-          fromFieldPath: region
+        - fromFieldPath: spec.region
           toFieldPath: spec.forProvider.values.components.global.region
         - fromFieldPath: spec.deletionPolicy
           toFieldPath: spec.forProvider.values.components.global.deletionPolicy
@@ -250,8 +235,6 @@ spec:
         - type: PatchSet
           patchSetName: "tags"
         - type: PatchSet
-          patchSetName: "region"
-        - type: PatchSet
           patchSetName: "deletionPolicy"
         - type: FromEnvironmentFieldPath
           fromFieldPath: "awsAccountId"
@@ -275,6 +258,8 @@ spec:
                       }
                     ]
                   }
+        - fromFieldPath: "spec.region"
+          toFieldPath: "spec.forProvider.region"
         - type: ToCompositeFieldPath
           fromFieldPath: "metadata.name"
           toFieldPath: "status.kmsKeyRefName"
@@ -317,9 +302,9 @@ spec:
         - type: PatchSet
           patchSetName: "tagsV2"
         - type: PatchSet
-          patchSetName: "region"
-        - type: PatchSet
           patchSetName: "deletionPolicy"
+        - fromFieldPath: "spec.region"
+          toFieldPath: "spec.forProvider.region"
         - fromFieldPath: "status.kmsKeyRefName"
           toFieldPath: "spec.forProvider.kmsKeyIdRef.name"
           policy:
@@ -569,14 +554,14 @@ spec:
         - type: PatchSet
           patchSetName: "tagsV2"
         - type: PatchSet
-          patchSetName: "region"
-        - type: PatchSet
           patchSetName: "deletionPolicy"
         - type: FromEnvironmentFieldPath
           fromFieldPath: "eksCidrIp"
           toFieldPath: "spec.forProvider.ingress[0].ipRanges[0].cidrIp"
           policy:
             fromFieldPath: Required
+        - fromFieldPath: "spec.region"
+          toFieldPath: "spec.forProvider.region"
         - fromFieldPath: "spec.vpcId"
           toFieldPath: "spec.forProvider.vpcId"
           policy:

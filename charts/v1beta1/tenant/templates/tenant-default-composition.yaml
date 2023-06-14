@@ -125,7 +125,6 @@ spec:
               data:
                 product:
                 awsAccountId:
-                region:
                 providerConfig:
           providerConfigRef:
             name:
@@ -148,8 +147,6 @@ spec:
           toFieldPath: "spec.forProvider.manifest.data.awsAccountId"
         - fromFieldPath: "spec.product"
           toFieldPath: "spec.forProvider.manifest.data.product"
-        - fromFieldPath: "spec.region"
-          toFieldPath: "spec.forProvider.manifest.data.region"
         - fromFieldPath: "status.providerConfig"
           toFieldPath: "spec.forProvider.manifest.data.providerConfig"
         - type: FromEnvironmentFieldPath
@@ -163,13 +160,8 @@ spec:
         - type: FromEnvironmentFieldPath
           fromFieldPath: "irsaTenantCompositionRef"
           toFieldPath: "spec.irsaCompositionRef"
-        - type: FromEnvironmentFieldPath
-          fromFieldPath: "providerConfigKubernetes"
-          toFieldPath: "spec.providerConfigKubernetes"
         - fromFieldPath: "spec.product"
           toFieldPath: "spec.product"
-        - fromFieldPath: "spec.region"
-          toFieldPath: "spec.region"
         - fromFieldPath: "spec.awsAccountId"
           toFieldPath: "spec.awsAccountId"
         - fromFieldPath: "spec.namespace"

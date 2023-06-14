@@ -1,6 +1,6 @@
 # tenant
 
-![Version: 1.2.0-v1beta1](https://img.shields.io/badge/Version-1.2.0--v1beta1-informational?style=flat-square)
+![Version: 2.0.0-v1beta1](https://img.shields.io/badge/Version-2.0.0--v1beta1-informational?style=flat-square)
 
 Helm chart for installing a custom tenant crossplane xrd.
 

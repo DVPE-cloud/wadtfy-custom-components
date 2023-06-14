@@ -122,7 +122,6 @@ spec:
               data:
                 product: "wadtfy"
                 awsAccountId:
-                region:
                 providerConfig:
           providerConfigRef:
             name:
@@ -145,9 +144,6 @@ spec:
         - type: FromEnvironmentFieldPath
           fromFieldPath: "eksAccountID"
           toFieldPath: "spec.forProvider.manifest.data.awsAccountId"
-        - type: FromEnvironmentFieldPath
-          fromFieldPath: "awsRegion"
-          toFieldPath: "spec.forProvider.manifest.data.region"
         - fromFieldPath: "status.providerConfig"
           toFieldPath: "spec.forProvider.manifest.data.providerConfig"
         - type: FromEnvironmentFieldPath
@@ -165,13 +161,7 @@ spec:
           fromFieldPath: "product"
           toFieldPath: "spec.product"
         - type: FromEnvironmentFieldPath
-          fromFieldPath: "awsRegion"
-          toFieldPath: "spec.region"
-        - type: FromEnvironmentFieldPath
           fromFieldPath: "eksAccountID"
           toFieldPath: "spec.awsAccountId"
-        - type: FromEnvironmentFieldPath
-          fromFieldPath: "providerConfigKubernetes"
-          toFieldPath: "spec.providerConfigKubernetes"
         - fromFieldPath: "spec.namespace"
           toFieldPath: "spec.namespace"
