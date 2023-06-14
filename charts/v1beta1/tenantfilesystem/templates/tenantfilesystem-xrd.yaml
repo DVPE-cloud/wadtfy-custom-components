@@ -129,6 +129,9 @@ spec:
                 storageClassSecret:
                   type: string
                   description: The ID of the generated StorageClassSecret.
+                mounttargetAvailabilityZone:
+                  type: string
+                  description: The AZ from one of the generated Mounttargets.
                 rbacRoleName:
                   type: string
                   description: The Name of the RBAC Role name.
