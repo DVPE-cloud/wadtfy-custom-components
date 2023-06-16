@@ -87,7 +87,7 @@ kubectl apply -f tenantfilesystem.yaml
 
 ### Other Parameters
 
-The XRD reads some other Parameter that are store in a `EnvironmentConfig` Resource.
+The XRD reads some other parameters that are store in a `EnvironmentConfig` Resource.
 That `EnvironmentConfig` is provided and automatically created by the `XTenant` resource.
 
 The `EnvironmentConfig` contains follow parameters.
