@@ -65,8 +65,8 @@ spec:
                   enum: ["generalPurpose", "maxIO"]
                 efsThroughputMode:
                   type: string
-                  description: "Specifies the throughput mode for the file system, either bursting or provisioned. If you set ThroughputMode to provisioned, you must also set a value for ProvisionedThroughputInMibps"
-                  enum: ["bursting", "provisioned"]
+                  description: "Specifies the throughput mode for the file system. Allowed values are either bursting, provisioned or elastic. If you set ThroughputMode to provisioned, you must also set a value for ProvisionedThroughputInMibps. See https://docs.aws.amazon.com/efs/latest/ug/performance.html#throughput-modes for a detailed explanation of throughput modes."
+                  enum: ["bursting", "provisioned", "elastic"]
                 efsProvisionedThroughputInMibps:
                   type: integer
                   description: "The throughput, measured in MiB/s, that you want to provision for the file system. Only applicable with efsThroughputMode is set to provisioned"
