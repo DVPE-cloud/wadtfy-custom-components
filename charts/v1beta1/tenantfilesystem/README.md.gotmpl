@@ -90,7 +90,7 @@ kubectl apply -f tenantfilesystem.yaml
 | vpcId | string | yes | ID of the VPC (Virtual Private Network) in which `vpcSubnetId's` are running. |
 | subnetIds | array | yes | ID's of the Subnet's from the `vpcId`. At least two subnetIds should be used due to availability reasons. |
 | efsPerformanceMode | enum: ["generalPurpose", "maxIO"] | yes | The performance mode this EFS instance should operate in. See [EFS Performance](https://docs.aws.amazon.com/efs/latest/ug/performance.html) for details. |
-| efsThroughputMode | enum: ["bursting", "provisioned"] | yes | Specifies the throughput mode for the file system, either bursting or provisioned. If you set ThroughputMode to provisioned, you must also set a value for ProvisionedThroughputInMibps. See [EFS Throughput Modes|](https://docs.aws.amazon.com/efs/latest/ug/performance.html#throughput-modes) for details. |
+| efsThroughputMode | enum: ["bursting", "provisioned", "elastic"] | yes | Specifies the throughput mode for the file system, either bursting or provisioned. If you set ThroughputMode to provisioned, you must also set a value for ProvisionedThroughputInMibps. See [EFS Throughput Modes|](https://docs.aws.amazon.com/efs/latest/ug/performance.html#throughput-modes) for details. |
 | efsProvisionedThroughputInMibps | integer | no | Set the Throughput in Mib/s. |
 | storageClass | object | yes | - |
 | storageClass.basePath | string | no | Path under which access points for dynamic provisioning is created. If this parameter is not specified, access points are created under the root directory of the file system. |
