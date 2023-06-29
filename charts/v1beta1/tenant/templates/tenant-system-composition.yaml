@@ -166,7 +166,7 @@ spec:
         - fromFieldPath: "spec.namespace"
           toFieldPath: "spec.namespace"
         - fromFieldPath: "spec.namespace"
-          toFieldPAth: "spec.env.defaultName"
+          toFieldPAth: "spec.defaultName"
           transforms:
             - type: match
               match:

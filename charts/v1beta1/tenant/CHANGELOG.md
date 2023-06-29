@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.2.0]
+
+### Changed
+* Replaced freeform field in secret-stored xrd with specific variable
+
 ## [3.1.0]
 
 ### Changed
@@ -77,3 +82,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [2.0.0]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-2.0.0-v1beta1/charts/v1beta1/tenant
 [3.0.0]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-3.0.0-v1beta1/charts/v1beta1/tenant
 [3.1.0]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-3.1.0-v1beta1/charts/v1beta1/tenant
+[3.2.0]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-3.2.0-v1beta1/charts/v1beta1/tenant
