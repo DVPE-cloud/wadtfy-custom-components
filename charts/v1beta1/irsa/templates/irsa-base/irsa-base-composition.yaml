@@ -219,8 +219,8 @@ spec:
         - type: CombineFromComposite
           combine:
             variables:
-              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
               - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
             strategy: string
             string:
               fmt: "%s-%s"

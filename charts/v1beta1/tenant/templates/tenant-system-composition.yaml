@@ -165,3 +165,12 @@ spec:
           toFieldPath: "spec.awsAccountId"
         - fromFieldPath: "spec.namespace"
           toFieldPath: "spec.namespace"
+        - fromFieldPath: "spec.namespace"
+          toFieldPAth: "spec.env.defaultName"
+          transforms:
+            - type: match
+              match:
+                patterns:
+                  - type: regexp
+                    regexp: '.*'
+                    result: secret-store-wadtfy
