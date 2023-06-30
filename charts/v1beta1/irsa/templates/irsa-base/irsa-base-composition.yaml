@@ -70,8 +70,8 @@ spec:
               - fromFieldPath: "spec.iamOidcProviderId"
               - fromFieldPath: "spec.iamOidcProviderId"
               - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
-              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
               - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
               - fromFieldPath: "spec.iamOidcProviderId"
             strategy: string
             string:

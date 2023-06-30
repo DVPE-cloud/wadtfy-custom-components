@@ -12,33 +12,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Reset transform types in tenant-default-composition and tenant-system-composition to regexp matcher.
 
 ## [3.2.3]
-
+> DO NOT USE, VERSION DOES NOT WORK
 ### Changed
 * Fixed typo.
 
 ## [3.2.2]
-
+> DO NOT USE, VERSION DOES NOT WORK
 ### Changed
 * Adjusted transform type in tenant-default-composition and tenant-system-composition
 
 ## [3.2.1]
-
+> DO NOT USE, VERSION DOES NOT WORK
 ### Changed
 * Fixed typos.
 
 ## [3.2.0]
-
+> DO NOT USE, VERSION DOES NOT WORK
 ### Changed
 * Replaced freeform field in secret-stored xrd with specific variable
 
 ## [3.1.0]
-
+> DO NOT USE, VERSION DOES NOT WORK
 ### Changed
 * Passing new property in tenant-default-composition and tenant-system-composition for setting default secret store name
 * Adjusted secretstore-composition to use new properties
 
 ## [3.0.0]
-
+> DO NOT USE, VERSION DOES NOT WORK
 ### Changed
 * Naming of SecretStore resource has been changed from secret-store-<product>-<namespace> to secret-store-<namespace>
 
