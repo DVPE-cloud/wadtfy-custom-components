@@ -168,6 +168,9 @@ spec:
         - fromFieldPath: "spec.namespace"
           toFieldPath: "spec.defaultName"
           transforms:
-            - type: string
-              string:
-                fmt: "secret-store-wadtfy"
+            - type: match
+              match:
+                patterns:
+                  - type: regexp
+                    regexp: '.*'
+                    result: "secret-store-wadtfy"

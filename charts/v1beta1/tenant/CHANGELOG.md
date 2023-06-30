@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+
+## [3.2.4]
+
+### Changed
+* Reset transform types in tenant-default-composition and tenant-system-composition to regexp matcher.
+
 ## [3.2.3]
 
 ### Changed
@@ -100,3 +106,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [3.2.0]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-3.2.0-v1beta1/charts/v1beta1/tenant
 [3.2.1]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-3.2.1-v1beta1/charts/v1beta1/tenant
 [3.2.2]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-3.2.2-v1beta1/charts/v1beta1/tenant
+[3.2.3]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-3.2.3-v1beta1/charts/v1beta1/tenant
+[3.2.4]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-3.2.4-v1beta1/charts/v1beta1/tenant
