@@ -1,6 +1,6 @@
 # irsa
 
-![Version: 1.2.0-v1beta1](https://img.shields.io/badge/Version-1.2.0--v1beta1-informational?style=flat-square)
+![Version: 1.3.0-v1beta1](https://img.shields.io/badge/Version-1.3.0--v1beta1-informational?style=flat-square)
 
 Helm chart for installing a custom irsa crossplane xrd.
 
