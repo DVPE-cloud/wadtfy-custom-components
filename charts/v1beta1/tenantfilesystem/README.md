@@ -1,6 +1,6 @@
 # tenant-filesystem
 
-![Version: 2.2.0-v1beta1](https://img.shields.io/badge/Version-2.2.0--v1beta1-informational?style=flat-square)
+![Version: 2.3.0-v1beta1](https://img.shields.io/badge/Version-2.3.0--v1beta1-informational?style=flat-square)
 
 Helm Chart for installing a custom tenantfilesystem xrd
 
