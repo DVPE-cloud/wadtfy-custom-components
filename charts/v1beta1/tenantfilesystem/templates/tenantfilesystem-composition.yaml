@@ -536,6 +536,12 @@ spec:
                         "ec2:DescribeNetworkInterfaces"
                       ],
                       "Resource": "*"
+                    },
+                    {
+                      "Sid" : "Stmt3DeleteAccessPoint",
+                      "Effect": "Allow",
+                      "Action": "elasticfilesystem:DeleteAccessPoint",
+                      "Resource": "*"
                     }
                   ]
                 }
