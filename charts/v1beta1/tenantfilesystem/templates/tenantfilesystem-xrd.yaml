@@ -57,8 +57,9 @@ spec:
                     type: string
                 region:
                   type: string
-                  description: "AWS Region in which to create network resources."
-                  enum: ["eu-west-1", "eu-central-1", "us-east-1"]
+                  description: "AWS Region in which to create network resources. (Deprecated)"
+                  enum: ["eu-west-1"]
+                  # check default
                 efsPerformanceMode:
                   type: string
                   description: "The performance mode this EFS instance should operate in."
@@ -101,7 +102,6 @@ spec:
                 - efsPerformanceMode
                 - efsThroughputMode
                 - storageClass
-                - region
             status:
               type: object
               properties:
