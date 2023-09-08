@@ -1,6 +1,6 @@
 # tenant-filesystem
 
-![Version: 2.3.0-v1beta1](https://img.shields.io/badge/Version-2.3.0--v1beta1-informational?style=flat-square)
+![Version: 2.4.0-v1beta1](https://img.shields.io/badge/Version-2.4.0--v1beta1-informational?style=flat-square)
 
 Helm Chart for installing a custom tenantfilesystem xrd
 
@@ -101,7 +101,6 @@ kubectl apply -f tenantfilesystem.yaml
 | storageClass.gidRangeStart | string | no | Start range of the POSIX group Id to be applied for Access Point root directory creation and for user identity enforcement. Not used if uid/gid is set. For user identity enforcement, this value will be applied as both the uid and the gid. |
 | storageClass.gidRangeStop | string | no | End range of the POSIX group Id. Not used if uid/gid is set. |
 | storageClass.reclaimPolicy | enum: ["Retain", "Delete"] | no | PersistentVolumes that are dynamically created by a StorageClass will have the reclaim policy specified in the reclaimPolicy field of the class, which can be either Delete or Retain. `Default: Delete`. |
-| region | string | yes | Sets the AWS Region where the EFS Filesystem should created in. |
 
 ### Other Parameters
 

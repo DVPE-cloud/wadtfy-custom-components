@@ -126,6 +126,9 @@ spec:
         - type: FromEnvironmentFieldPath
           fromFieldPath: "providerConfigKubernetes"
           toFieldPath: "spec.env.providerConfigKubernetes"
+        - type: FromEnvironmentFieldPath
+          fromFieldPath: "awsRegion"
+          toFieldPath: "spec.env.awsRegion"
         - type: ToCompositeFieldPath
           fromFieldPath: "spec.env.iamOidcProviderId"
           toFieldPath: "spec.iamOidcProviderId"
@@ -154,6 +157,11 @@ spec:
         - type: ToCompositeFieldPath
           fromFieldPath: "spec.env.providerConfigKubernetes"
           toFieldPath: "spec.providerConfigKubernetes"
+          policy:
+            fromFieldPath: Required
+        - type: ToCompositeFieldPath
+          fromFieldPath: "spec.env.awsRegion"
+          toFieldPath: "spec.region"
           policy:
             fromFieldPath: Required
 
