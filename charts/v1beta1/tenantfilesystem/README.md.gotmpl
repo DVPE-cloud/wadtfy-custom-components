@@ -3,6 +3,10 @@
 
 {{ template "chart.description" . }}
 
+# Tenantfilesystem
+
+Helm Chart for installing a custom tenantfilesystem xrd
+
 ## Installation
 Installs custom wadtfy tenantfilesystem crossplane XRD on an existing Kubernetes cluster for a specific namespace.
 
@@ -81,6 +85,7 @@ kubectl apply -f tenantfilesystem.yaml
 | Secret | This Secrets contains the AWS Account that will be used by the StorageClass. |
 | EFS FileSystem | AWS EFS Filesystem it self. |
 | StorageClass | Provided StorageClass to use from the Tenant for PV's/PVC's |
+| Usages | Crossplane Resource that prevent deletion of Resources that are still in used to protect the deletion-chain |
 
 ## Parameter Description
 
@@ -123,5 +128,13 @@ The `EnvironmentConfig` contains the following parameters.
 ## Configuration
 
 The following table lists the configurable parameters of the chart and its default values.
+
+## Limitations
+
+### EFS access across AWS regions
+
+The current AWS CSI Driver does not support region configuration injection per StorageClass or PVCs.
+Therefor it is not possible to mount an remote EFS that does not match with the region from the WADTFY Kubernetes cluster.
+Example: If the WADTFY Cluster runs in eu-west the tenantfilesystem cannot be created in other regions but in eu-west.
 
 {{ template "chart.valuesSection" . }}

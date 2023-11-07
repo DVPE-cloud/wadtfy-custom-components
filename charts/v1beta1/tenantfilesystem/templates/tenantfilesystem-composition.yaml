@@ -233,6 +233,9 @@ spec:
             string:
               fmt: mounttargets-%s-%s
           toFieldPath: spec.writeConnectionSecretToRef.name
+        - type: ToCompositeFieldPath
+          fromFieldPath: "metadata.name"
+          toFieldPath: "status.mountpointsReleaseRefName"
 
     # Get Variables from Helm Release connection secret
     - name: secret2status
@@ -725,6 +728,9 @@ spec:
           labels:
             crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
             crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
+          # ArgoCD Annotations Tracking for StorageClass, uncomment to enable (see below for patches too)
+          # annotations:
+          #   argocd.argoproj.io/tracking-id: ""
         spec:
           deletionPolicy: Delete
           forProvider:
@@ -788,6 +794,20 @@ spec:
           toFieldPath: "spec.forProvider.manifest.parameters.gidRangeEnd"
         - fromFieldPath: "spec.storageClass.basePath"
           toFieldPath: "spec.forProvider.manifest.parameters.basePath"
+        - type: ToCompositeFieldPath
+          fromFieldPath: "metadata.name"
+          toFieldPath: "status.storageClassName"
+        # ArgoCD Annotations Tracking for StorageClass, uncomment to enable
+        # - type: CombineFromComposite
+        #   combine:
+        #     variables:
+        #       - fromFieldPath: "spec.argocdAppName"
+        #       - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+        #       - fromFieldPath: "metadata.name"
+        #     strategy: string
+        #     string:
+        #       fmt: "%s:storage.k8s.io/StorageClass:%s/%s"
+        #   toFieldPath: "spec.forProvider.manifest.metadata.annotations[argocd.argoproj.io/tracking-id]"
 
     - name: k8s-role
       base:
@@ -893,3 +913,232 @@ spec:
             fromFieldPath: Required
         - fromFieldPath: "spec.eksCsiDriverServiceAccount"
           toFieldPath: "spec.forProvider.manifest.subjects[0].name"
+
+    - name: usage-kmskey-elasticfilesystem
+      base:
+        apiVersion: apiextensions.crossplane.io/v1alpha1
+        kind: Usage
+        metadata:
+          name: ""
+        spec:
+          reason: "elasticfilesystem needs kmskey"
+          of:
+            apiVersion: "kms.aws.crossplane.io/v1alpha1"
+            kind: Key
+            resourceRef:
+              name: ""
+          by:
+            apiVersion: "efs.aws.crossplane.io/v1alpha1"
+            kind: FileSystem
+            resourceRef:
+              name: ""
+          providerConfigRef:
+            name: ""
+      patches:
+        - type: PatchSet
+          patchSetName: "providerConfigKubernetes"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "spec.product"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+            strategy: string
+            string:
+              fmt: "usage-efs-kms-%s-%s-%s"
+          toFieldPath: "metadata.name"
+          policy:
+            fromFieldPath: Required
+        - type: FromCompositeFieldPath
+          fromFieldPath: status.kmsKeyRefName
+          toFieldPath: spec.of.resourceRef.name
+          policy:
+            fromFieldPath: Required
+        - type: FromCompositeFieldPath
+          fromFieldPath: status.fileSystemRef
+          toFieldPath: spec.by.resourceRef.name
+          policy:
+            fromFieldPath: Required
+
+    - name: usage-elasticfilesystem-storageclass
+      base:
+        apiVersion: apiextensions.crossplane.io/v1alpha1
+        kind: Usage
+        metadata:
+          name: ""
+        spec:
+          reason: "storageclass needs elasticfilesystem"
+          of:
+            apiVersion: "efs.aws.crossplane.io/v1alpha1"
+            kind: FileSystem
+            resourceRef:
+              name: ""
+          by:
+            apiVersion: "storage.k8s.io/v1"
+            kind: StorageClass
+            resourceRef:
+              name: ""
+          providerConfigRef:
+            name: ""
+      patches:
+        - type: PatchSet
+          patchSetName: "providerConfigKubernetes"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "spec.product"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+            strategy: string
+            string:
+              fmt: "usage-sc-efs-%s-%s-%s"
+          toFieldPath: "metadata.name"
+          policy:
+            fromFieldPath: Required
+        - type: FromCompositeFieldPath
+          fromFieldPath: status.fileSystemRef
+          toFieldPath: spec.of.resourceRef.name
+          policy:
+            fromFieldPath: Required
+        - type: FromCompositeFieldPath
+          fromFieldPath: status.storageClassName
+          toFieldPath: spec.by.resourceRef.name
+          policy:
+            fromFieldPath: Required
+    - name: usage-securitygroup-elasticfilesystem
+      base:
+        apiVersion: apiextensions.crossplane.io/v1alpha1
+        kind: Usage
+        metadata:
+          name: ""
+        spec:
+          reason: "elasticfilesystem needs securitygroup"
+          of:
+            apiVersion: "ec2.aws.crossplane.io/v1beta1"
+            kind: SecurityGroup
+            resourceRef:
+              name: ""
+          by:
+            apiVersion: "efs.aws.crossplane.io/v1alpha1"
+            kind: FileSystem
+            resourceRef:
+              name: ""
+          providerConfigRef:
+            name: ""
+      patches:
+        - type: PatchSet
+          patchSetName: "providerConfigKubernetes"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "spec.product"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+            strategy: string
+            string:
+              fmt: "usage-efs-sg-%s-%s-%s"
+          toFieldPath: "metadata.name"
+          policy:
+            fromFieldPath: Required
+        - type: FromCompositeFieldPath
+          fromFieldPath: status.securityGroupName
+          toFieldPath: spec.of.resourceRef.name
+          policy:
+            fromFieldPath: Required
+        - type: FromCompositeFieldPath
+          fromFieldPath: status.fileSystemRef
+          toFieldPath: spec.by.resourceRef.name
+          policy:
+            fromFieldPath: Required
+
+    - name: usage-iamrole-elasticfilesystem
+      base:
+        apiVersion: apiextensions.crossplane.io/v1alpha1
+        kind: Usage
+        metadata:
+          name: ""
+        spec:
+          reason: "elasticfilesystem needs iamrole"
+          of:
+            apiVersion: "iam.aws.crossplane.io/v1beta1"
+            kind: Role
+            resourceRef:
+              name: ""
+          by:
+            apiVersion: "efs.aws.crossplane.io/v1alpha1"
+            kind: FileSystem
+            resourceRef:
+              name: ""
+          providerConfigRef:
+            name: ""
+      patches:
+        - type: PatchSet
+          patchSetName: "providerConfigKubernetes"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "spec.product"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+            strategy: string
+            string:
+              fmt: "usage-iamrole-efs-%s-%s-%s"
+          toFieldPath: "metadata.name"
+          policy:
+            fromFieldPath: Required
+        - type: FromCompositeFieldPath
+          fromFieldPath: status.roleName
+          toFieldPath: spec.of.resourceRef.name
+          policy:
+            fromFieldPath: Required
+        - type: FromCompositeFieldPath
+          fromFieldPath: status.fileSystemRef
+          toFieldPath: spec.by.resourceRef.name
+          policy:
+            fromFieldPath: Required
+
+    - name: usage-policy-elasticfilesystem
+      base:
+        apiVersion: apiextensions.crossplane.io/v1alpha1
+        kind: Usage
+        metadata:
+          name: ""
+        spec:
+          reason: "elasticfilesystem needs policy"
+          of:
+            apiVersion: "iam.aws.crossplane.io/v1beta1"
+            kind: Policy
+            resourceRef:
+              name: ""
+          by:
+            apiVersion: "efs.aws.crossplane.io/v1alpha1"
+            kind: FileSystem
+            resourceRef:
+              name: ""
+          providerConfigRef:
+            name: ""
+      patches:
+        - type: PatchSet
+          patchSetName: "providerConfigKubernetes"
+        - type: CombineFromComposite
+          combine:
+            variables:
+              - fromFieldPath: "spec.product"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
+              - fromFieldPath: "metadata.labels[crossplane.io/claim-name]"
+            strategy: string
+            string:
+              fmt: "usage-policy-efs-%s-%s-%s"
+          toFieldPath: "metadata.name"
+          policy:
+            fromFieldPath: Required
+        - type: FromCompositeFieldPath
+          fromFieldPath: status.policyName
+          toFieldPath: spec.of.resourceRef.name
+          policy:
+            fromFieldPath: Required
+        - type: FromCompositeFieldPath
+          fromFieldPath: status.fileSystemRef
+          toFieldPath: spec.by.resourceRef.name
+          policy:
+            fromFieldPath: Required

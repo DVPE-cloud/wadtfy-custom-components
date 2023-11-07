@@ -25,6 +25,9 @@ spec:
             spec:
               type: object
               properties:
+                argocdAppName:
+                  type: string
+                  description: "Name of the used ArgoCD Application Name"
                 awsAccountId:
                   type: string
                   description: "Tenant AWS Account ID"
@@ -117,6 +120,9 @@ spec:
                 fileSystemRef:
                   type: string
                   description: The FileName ID Name of the generated EFS Filesystem.
+                mountpointsReleaseRefName:
+                  type: string
+                  description: The Helm Release name referenced for mountpoints by the TenantFilesystem.
                 roleName:
                   type: string
                   description: The ID of the generated Tenant IAM Role.
@@ -129,6 +135,9 @@ spec:
                 storageClassSecret:
                   type: string
                   description: The ID of the generated StorageClassSecret.
+                storageClassName:
+                  type: string
+                  description: The StorageClass name referenced by the TenantFilesystem.
                 mounttargetAvailabilityZone:
                   type: string
                   description: The AZ from one of the generated Mounttargets.

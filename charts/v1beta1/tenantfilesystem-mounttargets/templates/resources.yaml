@@ -17,4 +17,24 @@ spec:
     subnetID: {{ $subnet }}
   providerConfigRef:
     name: {{ $.Values.providerConfig.aws }}
+---
+apiVersion: apiextensions.crossplane.io/v1alpha1
+kind: Usage
+metadata:
+  labels:
+    crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
+    crossplane/xrd-helm_chart_version: {{ $.Chart.Version }}
+  name: usage-mp-efs-{{ $.Values.components.global.name }}-{{ $index }}
+spec:
+  reason: "elasticfilesystem needs mountpoints"
+  of:
+    apiVersion: "efs.aws.crossplane.io/v1alpha1"
+    kind: MountTarget
+    resourceRef:
+      name: {{ $.Values.components.global.name }}-mt-{{ $index }}
+  by:
+    apiVersion: "efs.aws.crossplane.io/v1alpha1"
+    kind: FileSystem
+    resourceRef:
+      name: {{ $.Values.components.mounttarget.fileSystemIDRef.name }}
 {{- end }}
