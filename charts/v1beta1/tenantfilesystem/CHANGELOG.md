@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.5.0]
+
+### Add
+
+* Implemented crossplane `Usage` resources in tenantfilesystem to avoid orphaned deletions
+  * Crossplane >= 1.14 required
+* Argocd TrackingID patch for StorageClasses (disabled in Composition Code at the moment)
+
+See: https://atc.bmwgroup.net/jira/browse/DVPE-7739 
+
 ## [2.4.0]
 ### Change
 
@@ -99,6 +109,7 @@ An AWS IAM policy permission right was missing.
 
 * Initial Version
 
+[2.5.0]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-filesystem-2.5.0-v1beta1/charts/v1beta1/tenantfilesystem
 [2.4.0]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-filesystem-2.4.0-v1beta1/charts/v1beta1/tenantfilesystem
 [2.3.0]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-filesystem-2.3.0-v1beta1/charts/v1beta1/tenantfilesystem
 [2.2.0]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-filesystem-2.2.0-v1beta1/charts/v1beta1/tenantfilesystem
