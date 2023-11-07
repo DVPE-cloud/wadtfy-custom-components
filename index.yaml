@@ -433,6 +433,25 @@ entries:
   tenant-filesystem:
   - apiVersion: v2
     appVersion: "1.1"
+    created: "2023-11-07T12:26:25.455138611Z"
+    description: Helm Chart for installing a custom tenantfilesystem xrd
+    digest: 8ddea43223bf6ca5c5a7b74d4c36df28304d84ba67a443a42523567371ffbde2
+    home: https://github.com/DVPE-cloud/wadtfy-custom-components
+    keywords:
+    - crossplane
+    - tenant-filesystem
+    - efs
+    - gitops
+    maintainers:
+    - name: mithie
+    - name: herrLierb
+    - name: crimbler2
+    name: tenant-filesystem
+    urls:
+    - https://github.com/DVPE-cloud/wadtfy-custom-components/releases/download/tenant-filesystem-2.5.0-v1beta1/tenant-filesystem-2.5.0-v1beta1.tgz
+    version: 2.5.0-v1beta1
+  - apiVersion: v2
+    appVersion: "1.1"
     created: "2023-09-08T06:41:23.2212111Z"
     description: Helm Chart for installing a custom tenantfilesystem xrd
     digest: e8bff7569e64bd290d94d302a7165e9d9a94c058b919a6dd3cd0ee088db68292
@@ -724,6 +743,16 @@ entries:
   tenantfilesystem-mounttargets:
   - apiVersion: v2
     appVersion: "1.1"
+    created: "2023-11-07T12:26:25.625441714Z"
+    description: Helm blueprint for Tenant Filesystem Mounttargets.
+    digest: 95de99d65961a019fb25d15c2fc8b8883d0b603020dbc58fb83d389518e84fb2
+    home: https://github.com/DVPE-cloud/wadtfy-custom-components
+    name: tenantfilesystem-mounttargets
+    urls:
+    - https://github.com/DVPE-cloud/wadtfy-custom-components/releases/download/tenantfilesystem-mounttargets-0.3.0-v1beta1/tenantfilesystem-mounttargets-0.3.0-v1beta1.tgz
+    version: 0.3.0-v1beta1
+  - apiVersion: v2
+    appVersion: "1.1"
     created: "2023-04-27T07:03:54.364835149Z"
     description: Helm blueprint for Tenant Filesystem Mounttargets.
     digest: 53708f79acd00a17c26fb96f1d373ae850912e9f51b01bbcb0a90cafc4c8472c
@@ -732,4 +761,4 @@ entries:
     urls:
     - https://github.com/DVPE-cloud/wadtfy-custom-components/releases/download/tenantfilesystem-mounttargets-0.2.0-v1beta1/tenantfilesystem-mounttargets-0.2.0-v1beta1.tgz
     version: 0.2.0-v1beta1
-generated: "2023-09-08T06:41:23.221336501Z"
+generated: "2023-11-07T12:26:25.625706551Z"
