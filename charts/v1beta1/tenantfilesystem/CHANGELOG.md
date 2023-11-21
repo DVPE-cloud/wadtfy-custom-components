@@ -13,8 +13,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * Crossplane >= 1.14 required
 * Argocd TrackingID patch for StorageClasses (disabled in Composition Code at the moment)
 
-See: https://atc.bmwgroup.net/jira/browse/DVPE-7739 
-
 ## [2.4.0]
 ### Change
 
