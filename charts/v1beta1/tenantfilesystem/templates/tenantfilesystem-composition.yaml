@@ -164,7 +164,8 @@ spec:
           toFieldPath: "spec.region"
           policy:
             fromFieldPath: Required
-
+      readinessChecks:
+        - type: None
     # Create a helm release which is able to interpret complex xrd schema data
     - name: tenant-filesystem-release
       base:
