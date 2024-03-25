@@ -533,6 +533,7 @@ spec:
                       "Sid" : "Stmt1DescribeMountTargets",
                       "Effect": "Allow",
                       "Action": [
+                        "elasticfilesystem:DescribeAccessPoints",
                         "elasticfilesystem:DescribeFileSystems",
                         "elasticfilesystem:DescribeMountTargets",
                         "elasticfilesystem:CreateAccessPoint",
