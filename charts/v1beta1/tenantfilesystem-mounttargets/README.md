@@ -1,6 +1,6 @@
 # tenantfilesystem-mounttargets
 
-![Version: 0.3.0-v1beta1](https://img.shields.io/badge/Version-0.3.0--v1beta1-informational?style=flat-square)
+![Version: 0.4.0-v1beta1](https://img.shields.io/badge/Version-0.4.0--v1beta1-informational?style=flat-square)
 
 Helm blueprint for Tenant Filesystem Mounttargets.
 
