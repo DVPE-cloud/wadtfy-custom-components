@@ -83,4 +83,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [0.1.2-v1beta1]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenantfilesystem-abstraction-0.1.2-v1beta1/charts/v1beta1/tenantfilesystem-abstraction
 [0.2.0-v1beta1]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenantfilesystem-abstraction-0.2.0-v1beta1/charts/v1beta1/tenantfilesystem-abstraction
 [0.3.0-v1beta1]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenantfilesystem-abstraction-0.3.0-v1beta1/charts/v1beta1/tenantfilesystem-abstraction
+[0.4.0-v1beta1]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenantfilesystem-abstraction-0.4.0-v1beta1/charts/v1beta1/tenantfilesystem-abstraction
 
