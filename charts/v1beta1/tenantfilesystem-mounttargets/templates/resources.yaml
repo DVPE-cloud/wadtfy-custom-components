@@ -1,6 +1,6 @@
 {{- range $index, $subnet := .Values.components.mounttarget.subnetIds }}
 ---
-apiVersion: efs.aws.crossplane.io/v1alpha1
+apiVersion: efs.aws.upbound.io/v1beta1
 kind: MountTarget
 metadata:
   labels:
@@ -28,12 +28,12 @@ metadata:
 spec:
   reason: "elasticfilesystem needs mountpoints"
   of:
-    apiVersion: "efs.aws.crossplane.io/v1alpha1"
+    apiVersion: "efs.aws.upbound.io/v1beta1"
     kind: MountTarget
     resourceRef:
       name: {{ $.Values.components.global.name }}-mt-{{ $index }}
   by:
-    apiVersion: "efs.aws.crossplane.io/v1alpha1"
+    apiVersion: "efs.aws.upbound.io/v1beta1"
     kind: FileSystem
     resourceRef:
       name: {{ $.Values.components.mounttarget.fileSystemIDRef.name }}
