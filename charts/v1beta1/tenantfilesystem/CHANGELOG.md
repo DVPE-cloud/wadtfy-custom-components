@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.0]
+
+### Change
+
+* Replaced `mounttarget` helm release usage by using composition-function
+
 ## [2.5.3]
 
 ### Change
@@ -125,6 +131,7 @@ An AWS IAM policy permission right was missing.
 
 * Initial Version
 
+[2.6.0]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-filesystem-2.6.0-v1beta1/charts/v1beta1/tenantfilesystem
 [2.5.3]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-filesystem-2.5.3-v1beta1/charts/v1beta1/tenantfilesystem
 [2.5.2]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-filesystem-2.5.2-v1beta1/charts/v1beta1/tenantfilesystem
 [2.5.1]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-filesystem-2.5.1-v1beta1/charts/v1beta1/tenantfilesystem
