@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   * `xtenantfilesystem-env`
 
 > [!IMPORTANT]
-> Do not upgrade before the follow requirements are not full filled !
+> Do not upgrade until all the following requirements are met !
 >
 > Requirements:
 > * Crossplane 1.15 with enabled `function` support
