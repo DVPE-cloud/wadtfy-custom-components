@@ -13,7 +13,9 @@ spec:
     plural: xtenantfilesystems
   claimNames:
     kind: TenantFilesystem
-    plural: tenantfilesystems
+    plural: tenantfilesystem
+  connectionSecretKeys:
+    - tenantfilesystem
   versions:
     - name: v1beta1
       served: true
@@ -108,6 +110,10 @@ spec:
             status:
               type: object
               properties:
+                env:
+                  description: Freeform field to pass values
+                  type: object
+                  x-kubernetes-preserve-unknown-fields: true
                 product:
                   type: string
                   description: "Tenant Product Name"
