@@ -10,11 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Change
 
 * Converted native Patch and Transform composition to function based P&T
-* Replaced `mounttarget` helm release usage by using composition-function
-* Removed required `xtenantfilesystem-env` XR.
+* Removed external XR's and make it obsolete:
+  * `xtenantfilesystem-mounttargets`
+  * `xtenantfilesystem-env`
 
 > [!IMPORTANT]
 > Do not upgrade before the follow requirements are not full filled !
+>
 > Requirements:
 > * Crossplane 1.15 with enabled `function` support
 > * Installed Crossplane Functions:
