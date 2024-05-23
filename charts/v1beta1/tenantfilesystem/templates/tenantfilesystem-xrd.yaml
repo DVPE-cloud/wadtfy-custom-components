@@ -13,7 +13,7 @@ spec:
     plural: xtenantfilesystems
   claimNames:
     kind: TenantFilesystem
-    plural: tenantfilesystem
+    plural: tenantfilesystems
   connectionSecretKeys:
     - tenantfilesystem
   versions:

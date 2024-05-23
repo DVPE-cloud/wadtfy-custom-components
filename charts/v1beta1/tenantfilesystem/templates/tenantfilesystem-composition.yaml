@@ -5,6 +5,8 @@ apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
   name: tenant-filesystem
+  labels:
+    version: "{{ regexReplaceAll "^([0-9]+\\.[0-9]+).*" .Chart.Version "${1}" }}"
 spec:
   writeConnectionSecretsToNamespace: crossplane-system
   compositeTypeRef:
@@ -1082,8 +1084,7 @@ spec:
               {{ setResourceNameAnnotation (print "mounttarget" $index) }}
             labels:
               crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
-              crossplane/xrd-helm_chart_version: {{ .Chart.Version }}
-
+              crossplane/xrd-helm_chart_version: `}} {{ .Chart.Version }} {{- `
           spec:
             forProvider:
               fileSystemIDRef:
