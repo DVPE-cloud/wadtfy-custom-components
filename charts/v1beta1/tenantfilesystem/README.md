@@ -72,9 +72,14 @@ kubectl apply -f tenantfilesystem.yaml
 
 ## Composed Resources created by the TenantFilesystem
 
+### XR Architecture Diagram
+
+![Diagram](xr-diagram.png)
+
+### Table of resources and purposes
+
 | Resource | Purpose |
 |----------|---------|
-| TenantFileSystemEnv | To buffer EnvironmentConfig parameters. |
 | IAM Role | It is an assume Role to give the ServiceAccount the access to create EFS Filesystem on Tenant AWS Account. |
 | IAM Policy | Describe the permissions for the assume Role. |
 | IAM PolicyAttach | Link the Role and Policy together. |
