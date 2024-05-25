@@ -120,9 +120,8 @@ spec:
                   convert:
                     toType: string
             - type: FromCompositeFieldPath
-              fromFieldPath: "spec.env.product"
+              fromFieldPath: "status.env.product"
               toFieldPath: "spec.forProvider.tags[4].tagValue"
-
 
         # This patchset is used for Crossplane CRD's which does not use tagValues
         - name: "tagsV2"
@@ -167,7 +166,7 @@ spec:
       resources:
 
         # The Key Policy maybe needs to better restrict the access
-        - name: awsKmsKey
+        - name: aws-kms-key
           base:
             apiVersion: kms.aws.crossplane.io/v1alpha1
             kind: Key
@@ -247,7 +246,7 @@ spec:
               fromFieldPath: "metadata.labels[crossplane.io/claim-namespace]"
               toFieldPath: "status.env.claimNamespace"
 
-        - name: awsElasticFileSystem
+        - name: aws-elasticfilesystem
           base:
             apiVersion: efs.aws.crossplane.io/v1alpha1
             kind: FileSystem
@@ -319,7 +318,7 @@ spec:
         # The aws-iam-assume-role is required for the CSI Driver to assume the role.
         # It is not possible to assume an remote Role with AssumeRoleWithWebIdentity Trustrelation if the source already assumed locally an Role with AssumeRoleWithWebIdentity.
         # TLDR: Assume Role from IRSA to remote IRSA Role does not work in AWS (Status 2023/03/31)
-        - name: awsIamAssumeRole
+        - name: aws-iam-assume-role
           base:
             apiVersion: iam.aws.crossplane.io/v1beta1
             kind: Role
@@ -383,7 +382,7 @@ spec:
                         ]
                       }
 
-        - name: awsPolicy
+        - name: aws-policy
           base:
             apiVersion: iam.aws.crossplane.io/v1beta1
             kind: Policy
@@ -477,7 +476,7 @@ spec:
               fromFieldPath: "metadata.name"
               toFieldPath: "status.policyName"
 
-        - name: awsRolePolicyAttach
+        - name: aws-role-policy-attach
           base:
             apiVersion: iam.aws.crossplane.io/v1beta1
             kind: RolePolicyAttachment
@@ -513,7 +512,7 @@ spec:
                 fromFieldPath: Required
             # no tags available in RolePolicyAttachment CRD (Status: 2023-03-31)
 
-        - name: awsSecuritygroup
+        - name: aws-efs-securitygroup
           base:
             apiVersion: ec2.aws.crossplane.io/v1beta1
             kind: SecurityGroup
@@ -583,7 +582,7 @@ spec:
               fromFieldPath: "metadata.name"
               toFieldPath: "status.securityGroupName"
 
-        - name: k8sSecret
+        - name: k8s-storageclass-secret
           base:
             apiVersion: kubernetes.crossplane.io/v1alpha1
             kind: Object
@@ -643,7 +642,7 @@ spec:
               fromFieldPath: "spec.forProvider.manifest.metadata.name"
               toFieldPath: "status.storageClassSecret"
 
-        - name: k8sStorageClass
+        - name: k8s-storageclass
           base:
             apiVersion: kubernetes.crossplane.io/v1alpha1
             kind: Object
@@ -743,7 +742,7 @@ spec:
             #       fmt: "%s:storage.k8s.io/StorageClass:%s/%s"
             #   toFieldPath: "spec.forProvider.manifest.metadata.annotations[argocd.argoproj.io/tracking-id]"
 
-        - name: k8sRole
+        - name: k8s-role
           base:
             apiVersion: kubernetes.crossplane.io/v1alpha1
             kind: Object
@@ -796,7 +795,7 @@ spec:
               policy:
                 fromFieldPath: Required
 
-        - name: k8sRoleBinding
+        - name: k8s-role-binding
           base:
             apiVersion: kubernetes.crossplane.io/v1alpha1
             kind: Object
@@ -852,7 +851,7 @@ spec:
               fromFieldPath: "status.env.eksCsiDriverServiceAccount"
               toFieldPath: "spec.forProvider.manifest.subjects[0].name"
 
-        - name: usageKmsKeyElasticfilesystem
+        - name: usage-kmskey-elasticfilesystem
           base:
             apiVersion: apiextensions.crossplane.io/v1alpha1
             kind: Usage
@@ -894,7 +893,7 @@ spec:
               policy:
                 fromFieldPath: Required
 
-        - name: usageElasticFilesystemStorageclass
+        - name: usage-elasticfilesystem-storageclass
           base:
             apiVersion: apiextensions.crossplane.io/v1alpha1
             kind: Usage
@@ -936,7 +935,7 @@ spec:
               policy:
                 fromFieldPath: Required
 
-        - name: usageSecuritygroupElasticfilesystem
+        - name: usage-securitygroup-elasticfilesystem
           base:
             apiVersion: apiextensions.crossplane.io/v1alpha1
             kind: Usage
@@ -978,7 +977,7 @@ spec:
               policy:
                 fromFieldPath: Required
 
-        - name: usageIamRoleElasticfilesystem
+        - name: usage-iamrole-elasticfilesystem
           base:
             apiVersion: apiextensions.crossplane.io/v1alpha1
             kind: Usage
@@ -1020,7 +1019,7 @@ spec:
               policy:
                 fromFieldPath: Required
 
-        - name: usagePolicyElasticfilesystem
+        - name: usage-policy-elasticfilesystem
           base:
             apiVersion: apiextensions.crossplane.io/v1alpha1
             kind: Usage
@@ -1108,32 +1107,6 @@ spec:
             mounttargetAvailabilityZone: {{ $AvailabilityZone }}
           {{- end }}
 `}}
-
-{{/*
-# Chicken egg issue
-# ---
-# apiVersion: apiextensions.crossplane.io/v1alpha1
-# kind: Usage
-# metadata:
-#   annotations:
-#     {{ setResourceNameAnnotation (print "usage-mounttarget-" $index) }}
-#   labels:
-#     crossplane/xrd-kind: xtenantfilesystem.wadtfy.bmwgroup.net
-#     crossplane/xrd-helm_chart_version: 2.6.0-v1beta1
-#   name: {{ printf "usage-mp-efs-%s-%s-%s-mt-%d" ( index $.context "apiextensions.crossplane.io/environment" "product" ) (index $.observed.composite.resource.metadata.labels "crossplane.io/claim-namespace")  (index $.observed.composite.resource.metadata.labels "crossplane.io/claim-name") $index }}
-# spec:
-#   reason: "elasticfilesystem needs mountpoints"
-#   of:
-#     apiVersion: "efs.aws.crossplane.io/v1alpha1"
-#     kind: MountTarget
-#     resourceRef:
-#       name: {{ printf "%s-%s-%s-mt-%d" ( index $.context "apiextensions.crossplane.io/environment" "product" ) (index $.observed.composite.resource.metadata.labels "crossplane.io/claim-namespace")  (index $.observed.composite.resource.metadata.labels "crossplane.io/claim-name") $index }}
-#   by:
-#     apiVersion: "efs.aws.crossplane.io/v1alpha1"
-#     kind: FileSystem
-#     resourceRef:
-#       name: {{ $.desired.composite.resource.status.fileSystemRef }}
-*/}}
 
   - step: automatically-detect-ready-composed-resources
     functionRef:
