@@ -1,3 +1,7 @@
+# Deprecated Project Notice
+
+> **⚠️ This project is deprecated!** Charts will no longer be updated
+
 # wadtfy-custom-components
 Contains a set of custom Crossplane components used in the WADTFY ecosystem.
 
