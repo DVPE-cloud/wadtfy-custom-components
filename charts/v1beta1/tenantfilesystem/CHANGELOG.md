@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.6.0]
+
+### Change
+
+* Converted native Patch and Transform composition to function based P&T
+* Removed external XR's and make it obsolete:
+  * `xtenantfilesystem-mounttargets`
+  * `xtenantfilesystem-env`
+
+> [!IMPORTANT]
+> Do not upgrade until all the following requirements are met !
+>
+> Requirements:
+> * Crossplane 1.15 with enabled `function` support
+> * Installed Crossplane Functions:
+>   * function-patch-and-transform
+>   * function-auto-ready
+>   * function-environment-configs
+>   * function-go-templating
+
 ## [2.5.3]
 
 ### Change
@@ -125,6 +145,7 @@ An AWS IAM policy permission right was missing.
 
 * Initial Version
 
+[2.6.0]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-filesystem-2.6.0-v1beta1/charts/v1beta1/tenantfilesystem
 [2.5.3]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-filesystem-2.5.3-v1beta1/charts/v1beta1/tenantfilesystem
 [2.5.2]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-filesystem-2.5.2-v1beta1/charts/v1beta1/tenantfilesystem
 [2.5.1]: https://github.com/DVPE-cloud/wadtfy-custom-components/tree/tenant-filesystem-2.5.1-v1beta1/charts/v1beta1/tenantfilesystem

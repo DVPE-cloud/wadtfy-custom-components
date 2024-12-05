@@ -2,7 +2,7 @@ apiVersion: v2
 appVersion: "1.1"
 description: "Helm Chart for installing a custom tenantfilesystem xrd"
 name: tenant-filesystem
-version: 2.5.3-v1beta1
+version: 2.6.0-v1beta1
 home: https://github.com/DVPE-cloud/wadtfy-custom-components
 keywords:
   - crossplane
